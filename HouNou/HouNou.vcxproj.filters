@@ -30,6 +30,9 @@
     <ClInclude Include="DirectX.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Game_GUI.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CDirectMusic.cpp">
@@ -45,6 +48,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="DirectX.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Game_GUI.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

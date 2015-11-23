@@ -27,8 +27,9 @@
 #include <d3dx9.h>
 #include <tchar.h>
 #include <time.h> 
+
 #include "D3DUtil.h"
-#include "D3DGUIClass.h"
+#include "Game_GUI.h"
 
 
 
@@ -69,17 +70,7 @@ extern wchar_t					g_strAdapterName[];   //包含显卡名称的字符数组
 extern bool						g_LMBDown;      // GUI中的鼠标状态信息，鼠标左键是否按下的标识
 extern int						g_MouseX, g_MouseY;      //存储鼠标坐标的两个变量
 
-																				 //创建四个GUI类对象，分别代表四个页面
-extern D3DGUIClass		*g_MainGUI;//主窗口
-extern D3DGUIClass		*g_StartGUI; //游戏开始窗口
-extern D3DGUIClass		*g_LoadGUI; //游戏载入窗口
-extern D3DGUIClass		*g_OptionGUI; //游戏设置窗口
 
-extern int						g_MainGUIFontID;						//  GUI中字体对象的ID
-extern int						g_StartGUIFontID;						//  GUI中字体对象的ID
-extern int						g_LoadGUIFontID;						//  GUI中字体对象的ID
-extern int						g_OptionGUIFontID;					//  GUI中字体对象的ID
-extern int						g_currentGUI;    //一个当前的GUI标识
 
 
 //-----------------------------------【全局函数声明部分】-------------------------------------

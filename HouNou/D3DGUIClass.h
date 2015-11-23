@@ -1,7 +1,6 @@
 //====================================================
 // Name: D3DGUIClass.h
 //	Des: 一个游戏GUI界面系统类的头文件
-// 2013年 11月17日  Create by 浅墨 
 //====================================================
 
 #pragma once
@@ -14,21 +13,22 @@
 
 // 鼠标按键状态宏
 #define UGP_BUTTON_UP			1
-#define UGP_BUTTON_OVER		2
-#define UGP_BUTTON_DOWN		3
+#define UGP_BUTTON_OVER			2
+#define UGP_BUTTON_DOWN			3
 
 
 // 菜单页面的宏定义
 #define GUI_MAIN_SCREEN       1
 #define GUI_START_SCREEN      2
-#define GUI_LOAD_SCREEN			3
-#define GUI_OPTION_SCREEN    4
+#define GUI_LOAD_SCREEN		  3
+#define GUI_OPTION_SCREEN     4
+#define GAME_RUN			  5
 
 // 设置一些GUI中用到的控件ID
 #define STATIC_TEXT_ID     1
 #define BUTTON_START_ID    2
-#define BUTTON_LOAD_ID  3
-#define BUTTON_OPTION_ID  4
+#define BUTTON_LOAD_ID	   3
+#define BUTTON_OPTION_ID   4
 #define BUTTON_QUIT_ID     5
 #define BUTTON_BACK_ID     6
 #define BUTTON_LEVEL_1_ID  7

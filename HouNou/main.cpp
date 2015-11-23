@@ -6,6 +6,8 @@
 
 #include "DirectX.h"
 
+DInputClass* g_pDInput = NULL;
+
 //-----------------------------------【WinMain( )函数】--------------------------------------
 //	描述：Windows应用程序的入口函数，我们的程序从这里开始
 //------------------------------------------------------------------------------------------------
@@ -45,6 +47,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine,
 	ShowWindow( hwnd, nShowCmd );    //调用Win32函数ShowWindow来显示窗口
 	UpdateWindow(hwnd);  //对窗口进行更新，就像我们买了新房子要装修一样
 
+	//Directinput初始化
+	g_pDInput = new DInputClass();
+	g_pDInput->Init(hwnd, hInstance, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE, DISCL_FOREGROUND | DISCL_NONEXCLUSIVE);
 
 	//消息循环过程
 	MSG msg = { 0 };  //初始化msg
@@ -87,8 +92,8 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam 
 		break;									//跳出该switch语句
 
 	case WM_KEYDOWN:                // 键盘按下消息
-		if (wParam == VK_ESCAPE)    // ESC键
-			DestroyWindow(hwnd);    // 销毁窗口, 并发送一条WM_DESTROY消息
+// 		if (wParam == VK_ESCAPE)    // ESC键
+// 			DestroyWindow(hwnd);    // 销毁窗口, 并发送一条WM_DESTROY消息
 		break;
 	case WM_DESTROY:				//窗口销毁消息
 		Direct3D_CleanUp();     //调用Direct3D_CleanUp函数，清理COM接口对象
@@ -96,7 +101,7 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam 
 		break;						//跳出该switch语句
 
 	case WM_KEYUP:
-		if(wParam == VK_ESCAPE) PostQuitMessage(0);
+// 		if(wParam == VK_ESCAPE) PostQuitMessage(0);
 		break;
 
 	case WM_LBUTTONDOWN:
@@ -112,12 +117,13 @@ LRESULT CALLBACK WndProc( HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam 
 		g_MouseY = HIWORD (lParam);
 		break;
 
-
-	default:						//若上述case条件都不符合，则执行该default语句
+	//若上述case条件都不符合，则执行该default语句
+	default:						
 		return DefWindowProc( hwnd, message, wParam, lParam );		//调用缺省的窗口过程来为应用程序没有处理的窗口消息提供缺省的处理。
 	}
 
-	return 0;					//正常退出
+	//正常退出
+	return 0;					
 }
 
 

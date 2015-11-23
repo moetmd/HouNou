@@ -1,7 +1,5 @@
 /*
-   Demo Name:  Direct Music Demo
-      Author:  Allen Sherrod
-     Chapter:  Ch 11
+
 */
 
 

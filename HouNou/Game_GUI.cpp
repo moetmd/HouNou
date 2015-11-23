@@ -13,6 +13,9 @@ int						g_LoadGUIFontID = -1;						//  GUI中字体对象的ID
 int						g_OptionGUIFontID = -1;						//  GUI中字体对象的ID
 int						g_currentGUI = GUI_MAIN_SCREEN;				//一个当前的GUI标识
 
+
+
+//GUI所需资源初始化
 bool GUI_Init()
 {
 	//--------------------------------------------------【GUI系统相关代码】-------------------------------------------------------
@@ -123,11 +126,14 @@ void GUICallback(int id, int state)
 		break;
 
 	case BUTTON_LEVEL_1_ID:  //start game开始游戏页面中，Level1按钮
-							 //等级一的游戏从这里开始写代码
+		if (state == UGP_BUTTON_DOWN)
+			g_currentGUI = GAME_RUN;
+			//等级一的游戏从这里开始写代码
 		break;
 	}
 }
 
+//GUI清理函数
 void GUI_CleanUp()
 {
 	SAFE_DELETE(g_MainGUI);

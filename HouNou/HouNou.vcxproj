@@ -151,6 +151,7 @@
     <ClInclude Include="D3DUtil.h" />
     <ClInclude Include="DirectInputClass.h" />
     <ClInclude Include="DirectX.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="Game_GUI.h" />
   </ItemGroup>
   <ItemGroup>
@@ -158,6 +159,7 @@
     <ClCompile Include="D3DGUIClass.cpp" />
     <ClCompile Include="DirectInputClass.cpp" />
     <ClCompile Include="DirectX.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game_GUI.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

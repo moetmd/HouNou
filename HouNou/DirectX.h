@@ -7,12 +7,12 @@
 // 描述：定义一些辅助宏
 //------------------------------------------------------------------------------------------------
 #ifndef WINDOW_WIDTH
-#define WINDOW_WIDTH	1366						//为窗口宽度定义的宏，以方便在此处修改窗口宽度
+#define WINDOW_WIDTH	1024						//为窗口宽度定义的宏，以方便在此处修改窗口宽度
 
 #endif 
 
 #ifndef WINDOW_HEIGHT
-#define WINDOW_HEIGHT	768							//为窗口高度定义的宏，以方便在此处修改窗口高度
+#define WINDOW_HEIGHT	576 						//为窗口高度定义的宏，以方便在此处修改窗口高度
 #endif
 
 #define WINDOW_TITLE _T("奉纳") //为窗口标题定义的宏
@@ -28,8 +28,11 @@
 #include <tchar.h>
 #include <time.h> 
 
+#include "CDirectMusic.h"
+#include "DirectInputClass.h"
 #include "D3DUtil.h"
 #include "Game_GUI.h"
+#include "Game.h"
 
 
 
@@ -54,21 +57,57 @@ struct CUSTOMVERTEX
 };
 #define D3DFVF_CUSTOMVERTEX  (D3DFVF_XYZ | D3DFVF_TEX1)
 
+//sprite structure
+struct SPRITE
+{
+	float x, y;
+	int frame, columns;
+	int width, height;
+	float scaling, rotation;
+	int startframe, endframe;
+	int starttime, delay;
+	int direction;
+	float velx, vely;
+	D3DCOLOR color;
+
+	SPRITE()
+	{
+		frame = 0;
+		columns = 1;
+		width = height = 0;
+		scaling = 1.0f;
+		startframe = endframe = 0;
+		direction = 1;
+		starttime = 0;
+		delay = 100;
+		velx = vely = 0.0f;
+		color = D3DCOLOR_XRGB(255, 255, 255);
+	}
+};
+
 
 //-----------------------------------【全局变量声明部分】-------------------------------------
 //	描述：全局变量的声明
 //------------------------------------------------------------------------------------------------
-extern LPDIRECT3DDEVICE9		g_pd3dDevice;				//Direct3D设备对象
-extern LPD3DXFONT				g_pTextFPS;    //字体COM接口
-extern LPD3DXFONT				g_pTextAdaperName;  // 显卡信息的2D文本
-extern LPD3DXFONT				g_pTextHelper;  // 帮助信息的2D文本
-extern LPD3DXFONT				g_pTextInfor;  // 绘制信息的2D文本
-extern float					g_FPS;       //一个浮点型的变量，代表帧速率
-extern wchar_t					g_strFPS[];    //包含帧速率的字符数组
-extern wchar_t					g_strAdapterName[];   //包含显卡名称的字符数组
 
-extern bool						g_LMBDown;      // GUI中的鼠标状态信息，鼠标左键是否按下的标识
-extern int						g_MouseX, g_MouseY;      //存储鼠标坐标的两个变量
+
+extern LPDIRECT3DDEVICE9		g_pd3dDevice;		//Direct3D设备对象
+extern LPD3DXFONT				g_pTextFPS;			//字体COM接口
+extern LPD3DXFONT				g_pTextAdaperName;  // 显卡信息的2D文本
+extern LPD3DXFONT				g_pTextHelper;		// 帮助信息的2D文本
+extern LPD3DXFONT				g_pTextInfor;		// 绘制信息的2D文本
+extern float					g_FPS;				//一个浮点型的变量，代表帧速率
+extern wchar_t					g_strFPS[];			//包含帧速率的字符数组
+extern wchar_t					g_strAdapterName[]; //包含显卡名称的字符数组
+
+extern DInputClass*				g_pDInput;			//DirectInput对象
+extern LPDIRECT3DSURFACE9		backbuffer;			//缓冲
+
+extern bool						g_LMBDown;			// GUI中的鼠标状态信息，鼠标左键是否按下的标识
+extern int						g_MouseX, g_MouseY; //存储鼠标坐标的两个变量
+extern bool						game_pause;         //游戏是否暂停
+extern bool						game_over;			//游戏是否结束
+
 
 
 

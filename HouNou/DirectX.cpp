@@ -18,6 +18,8 @@ bool								g_LMBDown = false;      // GUI中的鼠标状态信息，鼠标左键是否按下的标
 int									g_MouseX = 0, g_MouseY = 0;      //存储鼠标坐标的两个变量
 
 
+LPDIRECT3DSURFACE9 backbuffer = NULL;
+
 //-----------------------------------【Direct3D_Init( )函数】----------------------------------
 //	描述：Direct3D初始化函数，进行Direct3D的初始化
 //------------------------------------------------------------------------------------------------
@@ -81,6 +83,12 @@ HRESULT Direct3D_Init(HWND hwnd, HINSTANCE hInstance)
 	wcscat_s(TempName, g_strAdapterName);//把当前我们的显卡名加到“当前显卡型号：”字符串后面，结果存在TempName中
 	wcscpy_s(g_strAdapterName, TempName);//把TempName中的结果拷贝到全局变量g_strAdapterName中，大功告成~
 
+	
+	
+
+	//get a pointer to the back buffer surface
+	g_pd3dDevice->GetBackBuffer(0, 0, D3DBACKBUFFER_TYPE_MONO, &backbuffer);
+
 	if (!(S_OK == Objects_Init())) return E_FAIL;
 
 	SAFE_RELEASE(pD3D) //LPDIRECT3D9接口对象的使命完成，我们将其释放掉
@@ -113,6 +121,8 @@ HRESULT Objects_Init()
 
 	GUI_Init();
 
+	Game_Init();
+
 	return S_OK;
 }
 
@@ -125,7 +135,8 @@ HRESULT Objects_Init()
 //--------------------------------------------------------------------------------------------------
 void	Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 {
-	//GUI的实现暂时不需要在这里写代码
+	
+	Game_Update(hwnd);
 }
 
 
@@ -163,6 +174,8 @@ void Direct3D_Render(HWND hwnd, FLOAT fTimeDelta)
 	else if (g_currentGUI == GUI_OPTION_SCREEN)
 		ProcessGUI(g_OptionGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
+	else if (g_currentGUI == GAME_RUN)
+		Game_Render();
 	else
 		ProcessGUI(g_MainGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
@@ -243,4 +256,5 @@ void Direct3D_CleanUp()
 	SAFE_RELEASE(g_pd3dDevice);
 
 	GUI_CleanUp();
+	Game_Clean();
 }

@@ -121,7 +121,7 @@ HRESULT Objects_Init()
 
 	GUI_Init();
 
-	Game_Init();
+	//Game_Init();
 
 	return S_OK;
 }

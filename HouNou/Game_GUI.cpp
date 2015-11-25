@@ -127,8 +127,12 @@ void GUICallback(int id, int state)
 
 	case BUTTON_LEVEL_1_ID:  //start game开始游戏页面中，Level1按钮
 		if (state == UGP_BUTTON_DOWN)
+		{
 			g_currentGUI = GAME_RUN;
-			//等级一的游戏从这里开始写代码
+
+			if(game_over)
+				Game_Init();
+		}
 		break;
 	}
 }

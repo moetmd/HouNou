@@ -7,12 +7,12 @@
 // 描述：定义一些辅助宏
 //------------------------------------------------------------------------------------------------
 #ifndef WINDOW_WIDTH
-#define WINDOW_WIDTH	1024						//为窗口宽度定义的宏，以方便在此处修改窗口宽度
+#define WINDOW_WIDTH	1152						//为窗口宽度定义的宏，以方便在此处修改窗口宽度
 
 #endif 
 
 #ifndef WINDOW_HEIGHT
-#define WINDOW_HEIGHT	576 						//为窗口高度定义的宏，以方便在此处修改窗口高度
+#define WINDOW_HEIGHT	960						//为窗口高度定义的宏，以方便在此处修改窗口高度
 #endif
 
 #define WINDOW_TITLE _T("奉纳") //为窗口标题定义的宏

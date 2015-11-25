@@ -43,7 +43,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine,
 	}
 	//PlaySound(L"GameMedia\\Assassins Creed Theme 刺客信条.wav", NULL, SND_FILENAME | SND_ASYNC | SND_LOOP);   //循环播放背景音乐
 
-	MoveWindow(hwnd,100,100,WINDOW_WIDTH,WINDOW_HEIGHT,true);   //调整窗口显示时的位置，窗口左上角位于屏幕坐标（200，10）处
+	MoveWindow(hwnd,200,50,WINDOW_WIDTH,WINDOW_HEIGHT,true);   //调整窗口显示时的位置，窗口左上角位于屏幕坐标（200，10）处
 	ShowWindow( hwnd, nShowCmd );    //调用Win32函数ShowWindow来显示窗口
 	UpdateWindow(hwnd);  //对窗口进行更新，就像我们买了新房子要装修一样
 

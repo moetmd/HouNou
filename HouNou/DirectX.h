@@ -28,11 +28,17 @@
 #include <tchar.h>
 #include <time.h> 
 
+
 #include "CDirectMusic.h"
 #include "DirectInputClass.h"
 #include "D3DUtil.h"
+
 #include "Game_GUI.h"
 #include "Game.h"
+
+#include "TileUtil.h"
+
+#include "Sprite.h"
 
 
 
@@ -57,33 +63,7 @@ struct CUSTOMVERTEX
 };
 #define D3DFVF_CUSTOMVERTEX  (D3DFVF_XYZ | D3DFVF_TEX1)
 
-//sprite structure
-struct SPRITE
-{
-	float x, y;
-	int frame, columns;
-	int width, height;
-	float scaling, rotation;
-	int startframe, endframe;
-	int starttime, delay;
-	int direction;
-	float velx, vely;
-	D3DCOLOR color;
 
-	SPRITE()
-	{
-		frame = 0;
-		columns = 1;
-		width = height = 0;
-		scaling = 1.0f;
-		startframe = endframe = 0;
-		direction = 1;
-		starttime = 0;
-		delay = 100;
-		velx = vely = 0.0f;
-		color = D3DCOLOR_XRGB(255, 255, 255);
-	}
-};
 
 
 //-----------------------------------【全局变量声明部分】-------------------------------------

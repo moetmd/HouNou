@@ -66,7 +66,10 @@ private:
 
 class Player :public Sprite
 {
-
+public:
+	int day_step;
+	int night_step;
+	int current_step;
 };
 
 class Monster :public Sprite
@@ -76,5 +79,6 @@ class Monster :public Sprite
 
 class Stone :public Sprite
 {
-
+public:
+	void Draw();
 };

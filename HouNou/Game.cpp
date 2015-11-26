@@ -9,6 +9,7 @@ LPD3DXSPRITE spriteobj = NULL;
 
 //sprites
 Sprite player_1;
+Stone* stones[11];
 
 
 
@@ -81,17 +82,17 @@ int MAPDATA[MAPWIDTH*MAPHEIGHT] = {
 };
 
 int WALL[GAMEPANEL_HEIGHT][GAMEPANEL_WIDTH] = {
-	{ 0,0,0,0,0,0,0,0,0,0,0,0,-1,-1,-1,-1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0, 0,-1,-1,-1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0, 0, 0,-1,-1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0, 0, 0, 0,-1 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0, 0, 0, 0, 0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0, 0, 0, 0, 0 },
-	{ 0,0,0,0,0,0,0,0,0,0,0,0, 0, 0, 0, 0 },
-	{ -1, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ -1,-1, 0, 0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ -1,-1,-1, 0,0,0,0,0,0,0,0,0,0,0,0,0 },
-	{ -1,-1,-1,-1,0,0,0,0,0,0,0,0,0,0,0,0 }
+	{  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1,-1 },
+	{  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1 },
+	{  0, 0, 2, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0,-1,-1 },
+	{  0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 2, 0, 0,-1 },
+	{  0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{  0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 2, 0, 0 },
+	{  0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0 },
+	{ -1, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0 },
+	{ -1,-1, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 2, 0 },
+	{ -1,-1,-1, 0, 0, 2, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0 },
+	{ -1,-1,-1,-1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
 };
 
 
@@ -130,9 +131,9 @@ bool Game_Init()
 		return false;
 
 	//create Sound
-	if (!g_sound_walking.CreateSound("GameMedia\\walking.wav", 0))
-		return false;
-	if (!g_sound_bgm.CreateSound("GameMedia\\bgm.wav", UGP_INFINITE))
+// 	if (!g_sound_walking.CreateSound("GameMedia\\Sound\\walking.wav", 0))
+// 		return false;
+	if (!g_sound_bgm.CreateSound("GameMedia\\Sound\\bgm.wav", UGP_INFINITE))
 		return false;
 
 
@@ -145,6 +146,8 @@ bool Game_Init()
 	old_world_y = ScrollY;
 
 	g_sound_bgm.Play();
+
+	Stones_Init();
 
 
 	start = timeGetTime();
@@ -245,6 +248,11 @@ void Game_Render()
 
 		spriteobj->Begin(D3DXSPRITE_ALPHABLEND);
 
+		for (int i = 0; i < 11; i++)
+		{
+			stones[i]->Draw();
+		}
+
 		player_1.Draw();
 
 		spriteobj->End();
@@ -265,6 +273,38 @@ void Game_Clean()
 
 	g_sound_bgm.Shutdown();
 	g_sound_walking.Shutdown();
+
+}
+
+void Stones_Init()
+{
+	for (int i = 0; i < 11; ++i)
+	{
+		stones[i] = new Stone();
+		stones[i]->Set_img(L"GameMedia\\stone.png");
+		stones[i]->width = 64;
+		stones[i]->height = 64;
+		stones[i]->foot = 32;
+	}
+
+	int k = 0;
+
+	for (int i = 0; i < GAMEPANEL_HEIGHT; ++i)
+	{
+		for (int j = 0; j < GAMEPANEL_WIDTH; ++j)
+		{
+			if (WALL[i][j] == 2)
+			{
+				stones[k]->world_Y = i;
+				stones[k]->world_X = j;
+				++k;
+			}
+			if(k==11)
+				break;
+		}
+		if(k==11)
+			break;
+	}
 
 }
 

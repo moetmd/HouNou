@@ -78,3 +78,9 @@ void Sprite::Draw()
 }
 
 
+void Stone::Draw()
+{
+	Sprite_Transform_Draw(this->img, this->Get_RealPosX(), this->Get_RealPosY(), this->width,
+		this->height, this->frame, this->columns, 0, 1.0f, this->color);
+}
+

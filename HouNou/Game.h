@@ -89,6 +89,9 @@ void Game_Render();
 //游戏资源清理
 void Game_Clean();
 
+//初始化石头
+void Stones_Init();
+
 
 
 

@@ -13,6 +13,12 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="SpriteClasses">
+      <UniqueIdentifier>{0d10c06f-d833-4721-bfa6-960db6750bbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameCore">
+      <UniqueIdentifier>{28912c7b-f61c-4687-bcf4-f5e001679041}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CDirectMusic.h">
@@ -30,11 +36,17 @@
     <ClInclude Include="DirectX.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>SpriteClasses</Filter>
+    </ClInclude>
     <ClInclude Include="Game_GUI.h">
-      <Filter>头文件</Filter>
+      <Filter>GameCore</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>头文件</Filter>
+      <Filter>GameCore</Filter>
+    </ClInclude>
+    <ClInclude Include="TileUtil.h">
+      <Filter>GameCore</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -53,11 +65,26 @@
     <ClCompile Include="DirectX.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Game_GUI.cpp">
-      <Filter>源文件</Filter>
+    <ClCompile Include="Monster.cpp">
+      <Filter>SpriteClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="StoneClass.cpp">
+      <Filter>SpriteClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="SpriteClass.cpp">
+      <Filter>SpriteClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayerClass.cpp">
+      <Filter>SpriteClasses</Filter>
     </ClCompile>
     <ClCompile Include="Game.cpp">
-      <Filter>源文件</Filter>
+      <Filter>GameCore</Filter>
+    </ClCompile>
+    <ClCompile Include="Game_GUI.cpp">
+      <Filter>GameCore</Filter>
+    </ClCompile>
+    <ClCompile Include="TileUtil.cpp">
+      <Filter>GameCore</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

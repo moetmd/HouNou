@@ -1,5 +1,6 @@
 #include "DirectX.h"
 
+
 Sprite::Sprite()
 {
 	world_X = 0;
@@ -37,24 +38,28 @@ bool Sprite::Set_img(LPCTSTR filename)
 		return false;
 }
 
-void Sprite::Move_Up()
+bool Sprite::Move_Up()
 {
 	this->world_Y -= 1;
+	return true;
 }
 
-void Sprite::Move_Down()
+bool Sprite::Move_Down()
 {
 	this->world_Y += 1;
+	return true;
 }
 
-void Sprite::Move_left()
+bool Sprite::Move_Left()
 {
 	this->world_X -= 1;
+	return true;
 }
 
-void Sprite::Move_Right()
+bool Sprite::Move_Right()
 {
 	this->world_X += 1;
+	return true;
 }
 
 float Sprite::Get_RealPosX()
@@ -78,9 +83,12 @@ void Sprite::Draw()
 }
 
 
-void Stone::Draw()
-{
-	Sprite_Transform_Draw(this->img, this->Get_RealPosX(), this->Get_RealPosY(), this->width,
-		this->height, this->frame, this->columns, 0, 1.0f, this->color);
-}
+
+
+
+
+
+
+
+
 

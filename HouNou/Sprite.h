@@ -3,8 +3,6 @@
 class Sprite
 {
 public:
-	Sprite();
-	~Sprite();
 
 	//在游戏场景中的位置
 	int world_X;
@@ -42,13 +40,15 @@ public:
 	//角色素材图
 	LPDIRECT3DTEXTURE9 img;
 
+	Sprite();
+	~Sprite();
 
 	bool Set_img(LPCTSTR filename);
 
-	void Move_Up();
-	void Move_Down();
-	void Move_left();
-	void Move_Right();
+	virtual bool Move_Up();
+	virtual bool Move_Down();
+	virtual bool Move_Left();
+	virtual bool Move_Right();
 
 	float Get_RealPosX();
 	float Get_RealPosY();
@@ -63,22 +63,37 @@ private:
 
 
 
-
+//玩家类
 class Player :public Sprite
 {
 public:
 	int day_step;
 	int night_step;
 	int current_step;
+
+	virtual bool Move_Up();
+	virtual bool Move_Down();
+	virtual bool Move_Left();
+	virtual bool Move_Right();
 };
 
+
+//怪物类
 class Monster :public Sprite
 {
-
+public:
+	int Get_CurrentStep();
 };
 
+
+
+//石头类
 class Stone :public Sprite
 {
 public:
 	void Draw();
+	virtual bool Move_Up();
+	virtual bool Move_Down();
+	virtual bool Move_Left();
+	virtual bool Move_Right();
 };

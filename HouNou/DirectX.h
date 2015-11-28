@@ -1,4 +1,5 @@
 #pragma once
+using namespace std;
 //-----------------------------------【程序说明】----------------------------------------------
 //全局变量声明，函数声明
 //------------------------------------------------------------------------------------------------
@@ -27,6 +28,7 @@
 #include <d3dx9.h>
 #include <tchar.h>
 #include <time.h> 
+#include <map>
 
 
 #include "CDirectMusic.h"
@@ -34,11 +36,11 @@
 #include "D3DUtil.h"
 
 #include "Game_GUI.h"
+#include "Sprite.h"
 #include "Game.h"
 
 #include "TileUtil.h"
 
-#include "Sprite.h"
 
 
 

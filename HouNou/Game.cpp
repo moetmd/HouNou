@@ -4,12 +4,17 @@
 const int SCREENW = WINDOW_WIDTH;
 const int SCREENH = WINDOW_HEIGHT;
 
+const int MAX_STONE_NUM = 11;
+
 
 LPD3DXSPRITE spriteobj = NULL;
 
 //sprites
-Sprite player_1;
-Stone* stones[11];
+Player player_1;
+
+Monster* monster;
+map<int, Sprite*> stones;
+map<int, Sprite*> players;
 
 
 
@@ -22,7 +27,7 @@ CDirectMusic g_sound_walking;
 CDirectMusic g_sound_bgm;
 
 //textures
-LPDIRECT3DTEXTURE9 imgHero = NULL;
+
 
 //font
 ID3DXFont* g_pFont = NULL;
@@ -116,13 +121,23 @@ bool Game_Init()
 	player_1.Set_img(L"GameMedia\\027_00.png");
 
 	//set properties for sprites
-	player_1.world_X = 2;
-	player_1.world_Y = 2;
+	player_1.world_X = GAMEPANEL_WIDTH;
+	player_1.world_Y = GAMEPANEL_HEIGHT;
 	player_1.width = player_1.height = 96;
 	player_1.columns = 4;
 	player_1.startframe = 0;
 	player_1.endframe = 0;
 	player_1.foot = 20;
+	player_1.day_step = 6;
+	player_1.night_step = 7 - player_1.night_step;
+
+	players[1] = &player_1;
+
+	monster = new Monster();
+	monster->Set_img(L"GameMedia\\001_00.png");
+	monster->width = monster->height = 96;
+	monster->columns = 4;
+	monster->foot = 20;
 
 
 	//create font
@@ -186,55 +201,25 @@ void Game_Update(HWND window)
 		//move with keys
 		if (g_pDInput->IsKeyDown(DIK_UPARROW))
 		{
-
 			player_1.Move_Up();
-			if (player_1.world_Y < 0)
-			{
-				player_1.world_Y = 0;
-			}
-			if (WALL[player_1.world_Y][player_1.world_X] == -1)
-			{
-				player_1.Move_Down();
-			}
-
 		}
+
 		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
 		{
 			player_1.Move_Down();
-			if (player_1.world_Y > GAMEPANEL_HEIGHT - 1)
-			{
-				player_1.world_Y = GAMEPANEL_HEIGHT - 1;
-			}
-			if (WALL[player_1.world_Y][player_1.world_X] == -1)
-			{
-				player_1.Move_Up();
-			}
+			
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
 		{
-			player_1.Move_left();
-			if (player_1.world_X < 0)
-			{
-				player_1.world_X = 0;
-			}
-			if (WALL[player_1.world_Y][player_1.world_X] == -1)
-			{
-				player_1.Move_Right();
-			}
+			player_1.Move_Left();
+			
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
 		{
 			player_1.Move_Right();
-			if (player_1.world_X > GAMEPANEL_WIDTH - 1)
-			{
-				player_1.world_X = GAMEPANEL_WIDTH - 1;
-			}
-			if (WALL[player_1.world_Y][player_1.world_X] == -1)
-			{
-				player_1.Move_left();
-			}
+			
 		}
 
 	}
@@ -248,11 +233,13 @@ void Game_Render()
 
 		spriteobj->Begin(D3DXSPRITE_ALPHABLEND);
 
-		for (int i = 0; i < 11; i++)
+		map<int, Sprite*>::iterator iter;
+		for (iter = stones.begin(); iter != stones.end(); iter++)
 		{
-			stones[i]->Draw();
+			iter->second->Draw();
 		}
 
+		monster->Draw();
 		player_1.Draw();
 
 		spriteobj->End();
@@ -269,7 +256,17 @@ void Game_Clean()
 	if (gameworld)
 		gameworld->Release();
 
-	
+	map<int, Sprite*>::iterator iter;
+	for (iter = players.begin(); iter != players.end(); ++iter)
+	{
+		SAFE_DELETE(iter->second);
+	}
+	for (iter = stones.begin(); iter != stones.end(); ++iter)
+	{
+		SAFE_DELETE(iter->second);
+	}
+
+	SAFE_DELETE(monster);
 
 	g_sound_bgm.Shutdown();
 	g_sound_walking.Shutdown();
@@ -278,32 +275,36 @@ void Game_Clean()
 
 void Stones_Init()
 {
-	for (int i = 0; i < 11; ++i)
+	for (int i = 0; i < MAX_STONE_NUM; ++i)
 	{
-		stones[i] = new Stone();
-		stones[i]->Set_img(L"GameMedia\\stone.png");
-		stones[i]->width = 64;
-		stones[i]->height = 64;
-		stones[i]->foot = 32;
+		Stone* stone = new Stone();
+		stone->width = 64;
+		stone->height = 64;
+		stone->foot = 32;
+		stone->Set_img(L"GameMedia\\stone.png");
+		
+		stones[i] = stone;
 	}
 
-	int k = 0;
-
-	for (int i = 0; i < GAMEPANEL_HEIGHT; ++i)
+	
+	map<int, Sprite*>::iterator iter;
+	iter = stones.begin();
+	for (int i = 0; i < GAMEPANEL_HEIGHT; i++)
 	{
-		for (int j = 0; j < GAMEPANEL_WIDTH; ++j)
+		for (int j = 0; j < GAMEPANEL_WIDTH; j++)
 		{
 			if (WALL[i][j] == 2)
 			{
-				stones[k]->world_Y = i;
-				stones[k]->world_X = j;
-				++k;
+				iter->second->world_Y = i;
+				iter->second->world_X = j;
+
+				if (iter == stones.end())
+					return;
+
+				++iter;
 			}
-			if(k==11)
-				break;
+
 		}
-		if(k==11)
-			break;
 	}
 
 }

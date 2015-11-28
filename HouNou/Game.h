@@ -1,9 +1,15 @@
 #pragma once
 
 
+
 extern const int SCREENW;
 extern const int SCREENH;
 
+extern const int MAX_STONE_NUM;
+
+extern map<int, Sprite*> stones;
+extern Monster* monster;
+extern map<int, Sprite*> players;
 
 
 //sprite structure
@@ -74,8 +80,14 @@ extern float old_hero_x, old_hero_y;
 extern float old_world_x, old_world_y;
 extern bool hero_walking;
 
+extern const int GAMEPANEL_WIDTH;
+extern const int GAMEPANEL_HEIGHT;
 
+//整个游戏地图数据
 extern int MAPDATA[];
+
+//游戏面板范围数据
+extern int WALL[][16];
 
 //游戏初始化
 bool Game_Init();

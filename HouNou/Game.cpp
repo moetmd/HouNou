@@ -1,9 +1,13 @@
 
 #include "DirectX.h"
 
+#define DAY true;
+#define NIGHT false;
+
 const int SCREENW = WINDOW_WIDTH;
 const int SCREENH = WINDOW_HEIGHT;
 
+//最大石头数
 const int MAX_STONE_NUM = 11;
 
 
@@ -138,6 +142,8 @@ bool Game_Init()
 	monster->width = monster->height = 96;
 	monster->columns = 4;
 	monster->foot = 20;
+	monster->world_X = 2;
+	monster->world_Y = 4;
 
 
 	//create font
@@ -201,28 +207,43 @@ void Game_Update(HWND window)
 		//move with keys
 		if (g_pDInput->IsKeyDown(DIK_UPARROW))
 		{
-			player_1.Move_Up();
+			if(player_1.Move_Up())
+				player_1.current_step -= 1;
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
 		{
-			player_1.Move_Down();
+			if(player_1.Move_Down())
+				player_1.current_step -= 1;
 			
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
 		{
-			player_1.Move_Left();
+			if(player_1.Move_Left())
+				player_1.current_step -= 1;
 			
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
 		{
-			player_1.Move_Right();
+			if (player_1.Move_Right())
+				player_1.current_step -= 1;
 			
 		}
 
 	}
+
+	map<int, Sprite*>::iterator iter;
+	for (iter = stones.begin(); iter != stones.end();)
+	{
+		if (iter->second->out_of_map)
+			stones.erase(iter++);
+		else
+			++iter;
+	}
+
+	
 }
 
 
@@ -236,7 +257,8 @@ void Game_Render()
 		map<int, Sprite*>::iterator iter;
 		for (iter = stones.begin(); iter != stones.end(); iter++)
 		{
-			iter->second->Draw();
+			if (iter->second->visibal)
+				iter->second->Draw();
 		}
 
 		monster->Draw();
@@ -282,7 +304,7 @@ void Stones_Init()
 		stone->height = 64;
 		stone->foot = 32;
 		stone->Set_img(L"GameMedia\\stone.png");
-		
+		stone->out_of_map = false;
 		stones[i] = stone;
 	}
 

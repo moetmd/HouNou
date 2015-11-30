@@ -20,7 +20,7 @@ bool Player::Move_Up()
 	{
 		if (this->world_X == iter->second->world_X && this->world_Y - 1 == iter->second->world_Y)
 		{
-			if ( iter->second->Move_Up() )
+			if ( iter->second->Move_Up(false) )
 			{
 				this->world_Y -= 1;
 				return true;
@@ -57,7 +57,7 @@ bool Player::Move_Down()
 	{
 		if (this->world_X == iter->second->world_X && this->world_Y + 1 == iter->second->world_Y)
 		{
-			if (iter->second->Move_Down())
+			if (iter->second->Move_Down(false))
 			{
 				this->world_Y += 1;
 				return true;
@@ -93,7 +93,7 @@ bool Player::Move_Left()
 	{
 		if (this->world_X - 1 == iter->second->world_X && this->world_Y  == iter->second->world_Y)
 		{
-			if (iter->second->Move_Left())
+			if (iter->second->Move_Left(false))
 			{
 				this->world_X -= 1;
 				return true;
@@ -129,7 +129,7 @@ bool Player::Move_Right()
 	{
 		if (this->world_X + 1 == iter->second->world_X && this->world_Y == iter->second->world_Y)
 		{
-			if (iter->second->Move_Right())
+			if (iter->second->Move_Right(false))
 			{
 				this->world_X += 1;
 				return true;

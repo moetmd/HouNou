@@ -37,6 +37,12 @@ public:
 	//是否可见
 	bool visibal;
 
+	//是否死亡
+	bool killed;
+	
+	//出界
+	bool out_of_map;
+
 	//角色素材图
 	LPDIRECT3DTEXTURE9 img;
 
@@ -49,6 +55,11 @@ public:
 	virtual bool Move_Down();
 	virtual bool Move_Left();
 	virtual bool Move_Right();
+
+	virtual bool Move_Up(bool);
+	virtual bool Move_Down(bool);
+	virtual bool Move_Left(bool);
+	virtual bool Move_Right(bool);
 
 	float Get_RealPosX();
 	float Get_RealPosY();
@@ -71,6 +82,8 @@ public:
 	int night_step;
 	int current_step;
 
+	
+
 	virtual bool Move_Up();
 	virtual bool Move_Down();
 	virtual bool Move_Left();
@@ -82,7 +95,30 @@ public:
 class Monster :public Sprite
 {
 public:
+	int face_to;
+	int kill;
+	int step;
+	bool Action();
+
+
+private:
+
 	int Get_CurrentStep();
+
+	bool Move();
+	int Look_Around();
+
+	int Look_Up();
+	int Look_Down();
+	int Look_Left();
+	int Look_Right();
+
+	bool Move_Up();
+	bool Move_Down();
+	bool Move_Left();
+	bool Move_Right();
+
+	int Change_Direction(int A, int B, int C, int Face_to);
 };
 
 
@@ -91,9 +127,10 @@ public:
 class Stone :public Sprite
 {
 public:
+	
 	void Draw();
-	virtual bool Move_Up();
-	virtual bool Move_Down();
-	virtual bool Move_Left();
-	virtual bool Move_Right();
+	bool Move_Up(bool);
+	bool Move_Down(bool);
+	bool Move_Left(bool);
+	bool Move_Right(bool);
 };

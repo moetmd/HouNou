@@ -21,6 +21,8 @@ Sprite::Sprite()
 	velx, vely = 0.0f;
 	color = D3DCOLOR_XRGB(255, 255, 255);
 	visibal = true;
+	out_of_map = false;
+	killed = false;
 
 	LPDIRECT3DTEXTURE9 img = NULL;
 }
@@ -44,7 +46,18 @@ bool Sprite::Move_Up()
 	return true;
 }
 
+bool Sprite::Move_Up(bool)
+{
+	this->world_Y -= 1;
+	return true;
+}
+
 bool Sprite::Move_Down()
+{
+	this->world_Y += 1;
+	return true;
+}
+bool Sprite::Move_Down(bool)
 {
 	this->world_Y += 1;
 	return true;
@@ -55,8 +68,18 @@ bool Sprite::Move_Left()
 	this->world_X -= 1;
 	return true;
 }
+bool Sprite::Move_Left(bool)
+{
+	this->world_X -= 1;
+	return true;
+}
 
 bool Sprite::Move_Right()
+{
+	this->world_X += 1;
+	return true;
+}
+bool Sprite::Move_Right(bool)
 {
 	this->world_X += 1;
 	return true;

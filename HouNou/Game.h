@@ -8,6 +8,7 @@ extern const int SCREENH;
 extern const int MAX_STONE_NUM;
 
 extern map<int, Sprite*> stones;
+extern Monster monster_1;
 extern Monster* monster;
 extern map<int, Sprite*> players;
 

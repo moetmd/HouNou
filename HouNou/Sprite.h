@@ -64,7 +64,7 @@ public:
 	float Get_RealPosX();
 	float Get_RealPosY();
 
-	void Draw();
+	virtual void Draw();
 
 private:
 	float real_X;
@@ -84,10 +84,10 @@ public:
 
 	
 
-	virtual bool Move_Up();
-	virtual bool Move_Down();
-	virtual bool Move_Left();
-	virtual bool Move_Right();
+	virtual bool Move_Up(bool);
+	virtual bool Move_Down(bool);
+	virtual bool Move_Left(bool);
+	virtual bool Move_Right(bool);
 };
 
 
@@ -98,16 +98,17 @@ public:
 	int face_to;
 	int kill;
 	int step;
+	int current_step;
 	bool Action();
 
 
-private:
 
-	int Get_CurrentStep();
+	void Get_CurrentStep();
 
 	bool Move();
 	int Look_Around();
 
+private:
 	int Look_Up();
 	int Look_Down();
 	int Look_Left();

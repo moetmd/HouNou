@@ -7,44 +7,51 @@
 #define LEFT 4
 
 //Monster类
-int Monster::Get_CurrentStep()
+void Monster::Get_CurrentStep()
 {
 	int steps[] = { 1, 2, 5, 7, 7, 8, 8, 10 };
 	srand(timeGetTime());
-	return steps[rand() % 8];
+	this->step = steps[rand() % 8];
 }
 
 //行动
-bool Monster::Action()
-{
-	//先获取行动步数
-	int current_step = 0;
-	this->step = this->Get_CurrentStep();
-	switch (step)
-	{
-		//如果抽到杀人卡
-	case 1:
-	case 2:
-		while (kill < step && current_step <= 20) //在杀人数小于需要杀人数 或步数小于20 时一直循环
-		{
-			this->face_to = this->Look_Around();
-			if(this->Move())
-				current_step++;
-			
-		}
-		break;
-
-	default:
-		while (step > 0)
-		{
-			this->face_to = this->Look_Around();
-			if (this->Move())
-				step--;
-		}
-		break;
-	}
-
-}
+// bool Monster::Action()
+// {
+// 	//先获取行动步数
+// 	int current_step = 0;
+// 	int step = this->Get_CurrentStep();
+// 	switch (step)
+// 	{
+// 		//如果抽到杀人卡
+// 	case 1:
+// 	case 2:
+// 		while (kill < step && current_step <= 20) //在杀人数小于需要杀人数 或步数小于20 时一直循环
+// 		{
+// 			this->face_to = this->Look_Around();
+// 			if (this->Move())
+// 			{
+// 				current_step++;
+// 				this->Draw();
+// 			}
+// 		}
+// 		return true;
+// 		break;
+// 
+// 	default:
+/*		while (step > 0)*/
+// 		{
+// 			this->face_to = this->Look_Around();
+// 			if (this->Move())
+// 			{
+// 				step--;
+// 				this->Draw();
+// 			}
+// 		}
+// 		return true;
+// 		break;
+// 	}
+// 
+// }
 
 //观察
 int Monster::Look_Around()
@@ -52,19 +59,19 @@ int Monster::Look_Around()
 	switch (this->face_to)
 	{
 	case UP:
-		return this->Change_Direction(Look_Left(), Look_Right(), Look_Up(), face_to);
+		return this->Change_Direction(this->Look_Left(), this->Look_Right(), this->Look_Up(), this->face_to);
 		break;
 
 	case DOWN:
-		return this->Change_Direction(Look_Right(), Look_Left(), Look_Down(), face_to);
+		return this->Change_Direction(this->Look_Right(), this->Look_Left(), this->Look_Down(), this->face_to);
 		break;
 
 	case LEFT:
-		return this->Change_Direction(Look_Down(), Look_Up(), Look_Left(), face_to);
+		return this->Change_Direction(this->Look_Down(), this->Look_Up(), this->Look_Left(), this->face_to);
 		break;
 
 	case RIGHT:
-		return this->Change_Direction(Look_Up(), Look_Down(), Look_Right(), face_to);
+		return this->Change_Direction(this->Look_Up(), this->Look_Down(), this->Look_Right(), this->face_to);
 		break;
 
 	}
@@ -72,52 +79,61 @@ int Monster::Look_Around()
 
 int Monster::Change_Direction(int A, int B, int C, int Face_to)
 {
-	if (A < B)
-	{
-		if (A < C)
-		{
-			switch (Face_to)
-			{
-			case UP:
-				return LEFT;
-				break;
-			case RIGHT:
-				return UP;
-				break;
-			case DOWN:
-				return RIGHT;
-				break;
-			case LEFT:
-				return DOWN;
-				break;
-
-			}
-		}
-		else
-		{
-			return Face_to;
-		}
-	}
-	else 
+	if (A == -1)
 	{
 		if (B > C)
-			return Face_to;
-		else
 		{
-			switch (Face_to)
-			{
-			case UP:
-				return RIGHT;
-			case RIGHT:
-				return DOWN;
-			case DOWN:
-				return LEFT;
-			case LEFT:
-				return UP;
-			}
+			return Face_to;
 		}
+		else 
+			if (B < C)
+			{
+				Face_to += 1;
+			}
+			else
+				return Face_to;
 	}
-	
+
+	if (B == -1)
+	{
+		if (A > C)
+		{
+			return Face_to;
+		}
+		else
+			if (A < C)
+			{
+				Face_to -= 1;
+			}
+			else
+				return Face_to;
+
+	}
+
+	if (C == -1)
+	{
+		if (A > B)
+		{
+			Face_to += 1;
+		}
+		else
+			if (A < B)
+			{
+				Face_to -= 1;
+			}
+			else
+				return Face_to;
+	}
+
+	if (Face_to > 4)
+	{
+		Face_to = 1;
+	}
+	if (Face_to < 1)
+	{
+		Face_to = 4;
+	}
+
 	return Face_to;
 }
 
@@ -161,18 +177,18 @@ int Monster::Look_Up()
 
 	//如果之间有石头
 	if (distance != GAMEPANEL_HEIGHT)
-		for (iter = stones.begin(); iter != players.end(); ++iter)
+		for (iter = stones.begin(); iter != stones.end(); ++iter)
 		{
 			if (iter->second->world_Y < this->world_Y && iter->second->world_X == this->world_X)
 			{
 				if (this->world_Y - iter->second->world_Y < distance)
 				{
-					return 0;
+					return -1;
 				}
 			}
 		}
 	else
-		return 0;
+		return -1;
 
 	return distance;
 }
@@ -195,18 +211,18 @@ int Monster::Look_Down()
 
 	//如果之间有石头
 	if (distance != GAMEPANEL_HEIGHT)
-		for (iter = stones.begin(); iter != players.end(); ++iter)
+		for (iter = stones.begin(); iter != stones.end(); ++iter)
 		{
 			if (iter->second->world_Y > this->world_Y && iter->second->world_X == this->world_X)
 			{
 				if (iter->second->world_Y - this->world_Y < distance)
 				{
-					return 0;
+					return -1;
 				}
 			}
 		}
 	else
-		return 0;
+		return -1;
 
 	return distance;
 }
@@ -229,18 +245,18 @@ int Monster::Look_Left()
 
 	//如果之间有石头
 	if (distance != GAMEPANEL_WIDTH)
-		for (iter = stones.begin(); iter != players.end(); ++iter)
+		for (iter = stones.begin(); iter != stones.end(); ++iter)
 		{
 			if (iter->second->world_X < this->world_X && iter->second->world_Y == this->world_Y)
 			{
 				if (this->world_X - iter->second->world_X < distance)
 				{
-					return 0;
+					return -1;
 				}
 			}
 		}
 	else
-		return 0;
+		return -1;
 
 	return distance;
 }
@@ -262,18 +278,18 @@ int Monster::Look_Right()
 	}
 
 	if (distance != GAMEPANEL_WIDTH)
-		for (iter = stones.begin(); iter != players.end(); ++iter)
+		for (iter = stones.begin(); iter != stones.end(); ++iter)
 		{
 			if (iter->second->world_X > this->world_X && iter->second->world_Y == this->world_Y)
 			{
 				if (iter->second->world_X - this->world_X  < distance)
 				{
-					return 0;
+					return -1;
 				}
 			}
 		}
 	else
-		return 0;
+		return -1;
 
 
 	return distance;
@@ -292,7 +308,7 @@ bool Monster::Move_Up()
 	}
 
 
-	//如果前面是玩家，则玩家被判定为出界
+	//如果前面是玩家，则玩家被判定为死
 	map<int, Sprite*>::iterator iter;
 	for (iter = players.begin(); iter != players.end(); ++iter)
 	{
@@ -318,6 +334,59 @@ bool Monster::Move_Up()
 	}
 
 
+	//如果怪物进入血池
+	//判断下一个是否是血池
+	int x = this->world_X;
+	int y = this->world_Y;
+	bool flag = false;
+	while (true)
+	{
+		if (WALL[y - 1][x] == 1)
+		{
+			y -= 1;
+			flag = true;
+		}
+		else
+			break;
+	}
+
+	if (flag)//如果下一个是血池的话
+	{
+		//判断血池外是否是石头
+		for (iter = stones.begin(); iter != stones.end(); ++iter)
+		{
+			if (
+				x == iter->second->world_X
+				&& y - 1 == iter->second->world_Y
+				)
+			{
+				iter->second->Move_Up(true);
+				this->world_X = x;
+				this->world_Y = y - 1;
+				return true;
+			}
+		}
+
+		//判断血池外是否是玩家
+		for (iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (
+				x == iter->second->world_X
+				&& y - 1 == iter->second->world_Y
+				)
+			{
+				iter->second->Move_Up(true);
+				this->world_X = x;
+				this->world_Y = y - 1;
+				return true;
+			}
+		}
+	}
+
+	//如果下一个是空地
+	this->world_Y -= 1;
+	return true;
+
 }
 
 bool Monster::Move_Down()
@@ -331,7 +400,7 @@ bool Monster::Move_Down()
 	}
 
 
-	//如果前面是玩家，则玩家被判定为出界
+	//如果前面是玩家，则玩家被判定为死
 	map<int, Sprite*>::iterator iter;
 	for (iter = players.begin(); iter != players.end(); ++iter)
 	{
@@ -356,6 +425,61 @@ bool Monster::Move_Down()
 		}
 	}
 
+
+	//如果怪物进入血池
+	//判断下一个是否是血池
+	int x = this->world_X;
+	int y = this->world_Y;
+	bool flag = false;
+	while (true)
+	{
+		if (WALL[y + 1][x] == 1)
+		{
+			y += 1;
+			flag = true;
+		}
+		else
+			break;
+	}
+
+	if (flag)//如果下一个是血池的话
+	{
+		//判断血池外是否是石头
+		for (iter = stones.begin(); iter != stones.end(); ++iter)
+		{
+			if (
+				x == iter->second->world_X
+				&& y + 1 == iter->second->world_Y
+				)
+			{
+				iter->second->Move_Down(true);
+				this->world_X = x;
+				this->world_Y = y + 1;
+				return true;
+			}
+		}
+
+		//判断血池外是否是玩家
+		for (iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (
+				x == iter->second->world_X
+				&& y + 1 == iter->second->world_Y
+				)
+			{
+				iter->second->Move_Down(true);
+				this->world_X = x;
+				this->world_Y = y + 1;
+				return true;
+			}
+		}
+	}
+
+	//如果下一个是空地
+	this->world_Y += 1;
+	return true;
+
+
 }
 
 bool Monster::Move_Left()
@@ -369,7 +493,7 @@ bool Monster::Move_Left()
 	}
 
 
-	//如果前面是玩家，则玩家被判定为出界
+	//如果前面是玩家，则玩家被判定为死
 	map<int, Sprite*>::iterator iter;
 	for (iter = players.begin(); iter != players.end(); ++iter)
 	{
@@ -393,6 +517,62 @@ bool Monster::Move_Left()
 			return true;
 		}
 	}
+
+
+	//如果怪物进入血池
+	//判断下一个是否是血池
+	int x = this->world_X;
+	int y = this->world_Y;
+	bool flag = false;
+	while (true)
+	{
+		if (WALL[y][x - 1] == 1)
+		{
+			x -= 1;
+			flag = true;
+		}
+		else
+			break;
+	}
+
+	if (flag)//如果下一个是血池的话
+	{
+		//判断血池外是否是石头
+		for (iter = stones.begin(); iter != stones.end(); ++iter)
+		{
+			if (
+				x - 1 == iter->second->world_X
+				&&y == iter->second->world_Y
+				)
+			{
+				iter->second->Move_Left(true);
+				this->world_X = x - 1;
+				this->world_Y = y;
+				return true;
+			}
+		}
+
+		//判断血池外是否是玩家
+		for (iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (
+				x - 1 == iter->second->world_X
+				&& y == iter->second->world_Y
+				)
+			{
+				iter->second->Move_Left(true);
+				this->world_X = x - 1;
+				this->world_Y = y;
+				return true;
+			}
+		}
+	}
+
+	//如果下一个是空地
+	this->world_X -= 1;
+	return true;
+
+
 }
 
 bool Monster::Move_Right()
@@ -406,7 +586,7 @@ bool Monster::Move_Right()
 	}
 
 
-	//如果前面是玩家，则玩家被判定为出界
+	//如果前面是玩家，则玩家被判定为死
 	map<int, Sprite*>::iterator iter;
 	for (iter = players.begin(); iter != players.end(); ++iter)
 	{
@@ -430,4 +610,59 @@ bool Monster::Move_Right()
 			return true;
 		}
 	}
+
+	//如果怪物进入血池
+	//判断下一个是否是血池
+	int x = this->world_X;
+	int y = this->world_Y;
+	bool flag = false;
+	while (true)
+	{
+		if (WALL[y][x + 1] == 1)
+		{
+			x += 1;
+			flag = true;
+		}
+		else
+			break;
+	}
+
+	if (flag)//如果下一个是血池的话
+	{
+		//判断血池外是否是石头
+		for (iter = stones.begin(); iter != stones.end(); ++iter)
+		{
+			if (
+				x + 1 == iter->second->world_X
+				&&y == iter->second->world_Y
+				)
+			{
+				iter->second->Move_Right(true);
+				this->world_X = x + 1;
+				this->world_Y = y;
+				return true;
+			}
+		}
+
+		//判断血池外是否是玩家
+		for (iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (
+				x + 1 == iter->second->world_X
+				&& y == iter->second->world_Y
+				)
+			{
+				iter->second->Move_Right(true);
+				this->world_X = x + 1;
+				this->world_Y = y;
+				return true;
+			}
+		}
+	}
+
+	//如果下一个是空地
+	this->world_X += 1;
+	return true;
+
+
 }

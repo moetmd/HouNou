@@ -1,11 +1,16 @@
 #include "DirectX.h"
 
-bool Player::Move_Up()
+bool Player::Move_Up(bool force_push)
 {
 
 	//±ß½ç¼ì²â
 	if (this->world_Y - 1 < 0 || WALL[this->world_Y - 1][this->world_X] == -1)
 	{
+		if (force_push)
+		{
+			this->killed = true;
+			return true;
+		}
 		return false;
 	}
 	
@@ -20,6 +25,12 @@ bool Player::Move_Up()
 	{
 		if (this->world_X == iter->second->world_X && this->world_Y - 1 == iter->second->world_Y)
 		{
+			if (force_push)
+			{
+				iter->second->Move_Up(true);
+				this->world_Y -= 1;
+				return true;
+			}
 			if ( iter->second->Move_Up(false) )
 			{
 				this->world_Y -= 1;
@@ -37,12 +48,17 @@ bool Player::Move_Up()
 }
 
 
-bool Player::Move_Down()
+bool Player::Move_Down(bool force_push)
 {
 
 	//±ß½ç¼ì²â
 	if (this->world_Y + 1 > GAMEPANEL_HEIGHT - 1 || WALL[this->world_Y + 1][this->world_X] == -1)
 	{
+		if (force_push)
+		{
+			this->killed = true;
+			return true;
+		}
 		return false;
 	}
 
@@ -57,6 +73,12 @@ bool Player::Move_Down()
 	{
 		if (this->world_X == iter->second->world_X && this->world_Y + 1 == iter->second->world_Y)
 		{
+			if (force_push)
+			{
+				iter->second->Move_Down(true);
+				this->world_Y += 1;
+				return true;
+			}
 			if (iter->second->Move_Down(false))
 			{
 				this->world_Y += 1;
@@ -73,12 +95,17 @@ bool Player::Move_Down()
 	return true;
 }
 
-bool Player::Move_Left()
+bool Player::Move_Left(bool force_push)
 {
 
 	//±ß½ç¼ì²â
 	if (this->world_X - 1 < 0 || WALL[this->world_Y][this->world_X - 1] == -1)
 	{
+		if (force_push)
+		{
+			this->killed = true;
+			return true;
+		}
 		return false;
 	}
 
@@ -93,6 +120,12 @@ bool Player::Move_Left()
 	{
 		if (this->world_X - 1 == iter->second->world_X && this->world_Y  == iter->second->world_Y)
 		{
+			if (force_push)
+			{
+				iter->second->Move_Left(true);
+				this->world_X -= 1;
+				return true;
+			}
 			if (iter->second->Move_Left(false))
 			{
 				this->world_X -= 1;
@@ -109,12 +142,17 @@ bool Player::Move_Left()
 	return true;
 }
 
-bool Player::Move_Right()
+bool Player::Move_Right(bool force_push)
 {
 
 	//±ß½ç¼ì²â
 	if (this->world_X + 1 > GAMEPANEL_WIDTH - 1 || WALL[this->world_Y][this->world_X + 1] == -1)
 	{
+		if (force_push)
+		{
+			this->killed = true;
+			return true;
+		}
 		return false;
 	}
 
@@ -129,6 +167,12 @@ bool Player::Move_Right()
 	{
 		if (this->world_X + 1 == iter->second->world_X && this->world_Y == iter->second->world_Y)
 		{
+			if (force_push)
+			{
+				iter->second->Move_Right(true);
+				this->world_X += 1;
+				return true;
+			}
 			if (iter->second->Move_Right(false))
 			{
 				this->world_X += 1;

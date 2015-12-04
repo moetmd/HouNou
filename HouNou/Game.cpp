@@ -16,11 +16,13 @@ LPD3DXSPRITE spriteobj = NULL;
 //sprites
 Player player_1;
 
+Monster monster_1;
 Monster* monster;
 map<int, Sprite*> stones;
 map<int, Sprite*> players;
 
-
+//决定是不是怪物的回合
+bool is_monster_turn = false;
 
 //game state
 bool						game_pause = true;         //游戏是否暂停
@@ -125,8 +127,8 @@ bool Game_Init()
 	player_1.Set_img(L"GameMedia\\027_00.png");
 
 	//set properties for sprites
-	player_1.world_X = GAMEPANEL_WIDTH;
-	player_1.world_Y = GAMEPANEL_HEIGHT;
+	player_1.world_X = GAMEPANEL_WIDTH - 1;
+	player_1.world_Y = GAMEPANEL_HEIGHT - 1;
 	player_1.width = player_1.height = 96;
 	player_1.columns = 4;
 	player_1.startframe = 0;
@@ -137,14 +139,22 @@ bool Game_Init()
 
 	players[1] = &player_1;
 
-	monster = new Monster();
-	monster->Set_img(L"GameMedia\\001_00.png");
-	monster->width = monster->height = 96;
-	monster->columns = 4;
-	monster->foot = 20;
-	monster->world_X = 2;
-	monster->world_Y = 4;
+// 	monster->Set_img(L"GameMedia\\001_00.png");
+// 	monster->width = monster->height = 96;
+// 	monster->columns = 4;
+// 	monster->foot = 20;
+// 	monster->world_X = 0;
+// 	monster->world_Y = 0;
+// 	monster->face_to = 2;
 
+	monster_1.Set_img(L"GameMedia\\001_00.png");
+	monster_1.width = monster_1.height = 96;
+	monster_1.columns = 4;
+	monster_1.foot = 20;
+	monster_1.world_X = 0;
+	monster_1.world_Y = 0;
+	monster_1.face_to = 2;
+	monster = &monster_1;
 
 	//create font
 	if (FAILED(D3DXCreateFont(g_pd3dDevice, 36, 0, 0, 1, false, DEFAULT_CHARSET,
@@ -171,7 +181,7 @@ bool Game_Init()
 	Stones_Init();
 
 
-	start = timeGetTime();
+	start = GetTickCount();
 
 	return true;
 }
@@ -192,52 +202,96 @@ void Game_Update(HWND window)
 		g_sound_bgm.Stop();
 	}
 
+	
 
-		//update input devices
-		g_pDInput->GetInput();
+	//update input devices
+	g_pDInput->GetInput();
+	//move with keys
 
-	if (timeGetTime() - start >= 80)
+	if (!is_monster_turn)
 	{
-		start = timeGetTime();
-// 		//font rect
-// 				RECT fontRect;
-// 				GetClientRect(window, &fontRect);
-
-
-		//move with keys
 		if (g_pDInput->IsKeyDown(DIK_UPARROW))
 		{
-			if(player_1.Move_Up())
+			if (player_1.Move_Up(false))
 				player_1.current_step -= 1;
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
 		{
-			if(player_1.Move_Down())
+			if (player_1.Move_Down(false))
 				player_1.current_step -= 1;
-			
+
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
 		{
-			if(player_1.Move_Left())
+			if (player_1.Move_Left(false))
 				player_1.current_step -= 1;
-			
+
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
 		{
-			if (player_1.Move_Right())
+			if (player_1.Move_Right(false))
 				player_1.current_step -= 1;
-			
+
 		}
 
+		if (g_pDInput->IsKeyDown(DIK_SPACE))
+		{
+			//先获取行动步数
+			monster->current_step = 0;
+			monster->Get_CurrentStep();
+			is_monster_turn = true;
+		}
 	}
+
+	//怪物的行为
+	if (is_monster_turn)
+	{
+		//先获取行动步数
+		
+	
+		switch (monster->step)
+		{
+		//如果抽到杀人卡
+		case 1:
+		case 2:
+			monster->face_to = monster->Look_Around();
+			if (monster->Move())
+			{
+				monster->current_step++;
+			}
+			if (monster->kill >= monster->step || monster->current_step > 20)
+			{
+				monster->kill = 0;
+				is_monster_turn = false;
+			}
+			break;
+
+		default:
+			monster->face_to = monster->Look_Around();
+			if (monster->Move())
+			{
+				monster->current_step++;
+			}
+			if (monster->current_step > monster->step)
+			{
+				is_monster_turn = false;
+			}
+			break;
+		}
+
+		
+
+	}
+
+	
 
 	map<int, Sprite*>::iterator iter;
 	for (iter = stones.begin(); iter != stones.end();)
 	{
-		if (iter->second->out_of_map)
+		if (iter->second->out_of_map || WALL[iter->second->world_Y][iter->second->world_X] == 1)
 			stones.erase(iter++);
 		else
 			++iter;
@@ -249,6 +303,7 @@ void Game_Update(HWND window)
 
 void Game_Render()
 {	
+	start = GetTickCount();
 
 		ScrollScreen();
 

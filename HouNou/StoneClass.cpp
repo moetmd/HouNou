@@ -7,21 +7,21 @@ void Stone::Draw()
 		this->height, this->frame, this->columns, 0, 1.0f, this->color);
 }
 
-bool Stone::Move_Up(bool push_into_wall)
+bool Stone::Move_Up(bool force_push)
 {
 	//判断下一个是否是墙
 	if (this->world_Y - 1 < 0 || WALL[this->world_Y - 1][this->world_X] == -1)
 	{
 		//如果怪物推，可以推进墙里面
-		if (push_into_wall)
+		if (force_push)
 		{
-			this->out_of_map = false;
+			this->out_of_map = true;
 			return true;
 		}
 		//如果在左上角和右下角推，可以推出地图
 		if (this->world_X == 0 && this->world_Y == 0)
 		{
-			this->out_of_map = false;
+			this->out_of_map = true;
 			return true;
 		}
 		return false;
@@ -37,7 +37,7 @@ bool Stone::Move_Up(bool push_into_wall)
 			)
 		{
 			//如果是怪物推，下一个石头也要移动
-			if (push_into_wall)
+			if (force_push)
 			{
 				iter->second->Move_Up(true);
 				this->world_Y -= 1;
@@ -56,7 +56,7 @@ bool Stone::Move_Up(bool push_into_wall)
 			)
 		{
 			//如果是怪物推，下一个玩家也要移动
-			if (push_into_wall)
+			if (force_push)
 			{
 				iter->second->Move_Up(true);
 				this->world_Y -= 1;
@@ -130,19 +130,19 @@ bool Stone::Move_Up(bool push_into_wall)
 	return true;
 }
 
-bool Stone::Move_Down(bool push_into_wall)
+bool Stone::Move_Down(bool force_push)
 {
 	//判断下一个是否是墙
 	if (this->world_Y + 1 > GAMEPANEL_HEIGHT - 1 || WALL[this->world_Y + 1][this->world_X] == -1)
 	{
-		if (push_into_wall)
+		if (force_push)
 		{
-			this->out_of_map = false;
+			this->out_of_map = true;
 			return true;
 		}
 		if (this->world_X == GAMEPANEL_WIDTH - 1 && this->world_Y == GAMEPANEL_HEIGHT - 1)
 		{
-			this->out_of_map = false;
+			this->out_of_map = true;
 			return true;
 		}
 		return false;
@@ -158,7 +158,7 @@ bool Stone::Move_Down(bool push_into_wall)
 			)
 		{
 			//如果是怪物推，下一个石头也要移动
-			if (push_into_wall)
+			if (force_push)
 			{
 				iter->second->Move_Down(true);
 				this->world_Y += 1;
@@ -177,7 +177,7 @@ bool Stone::Move_Down(bool push_into_wall)
 			)
 		{
 			//如果是怪物推，下一个玩家也要移动
-			if (push_into_wall)
+			if (force_push)
 			{
 				iter->second->Move_Down(true);
 				this->world_Y += 1;
@@ -251,19 +251,19 @@ bool Stone::Move_Down(bool push_into_wall)
 	return true;
 }
 
-bool Stone::Move_Left(bool push_into_wall)
+bool Stone::Move_Left(bool force_push)
 {
 	//判断下一个是否是墙
 	if (this->world_X - 1 < 0 || WALL[this->world_Y][this->world_X - 1] == -1)
 	{
-		if (push_into_wall)
+		if (force_push)
 		{
-			this->out_of_map = false;
+			this->out_of_map = true;
 			return true;
 		}
 		if (this->world_X == 0 && this->world_Y == 0)
 		{
-			this->out_of_map = false;
+			this->out_of_map = true;
 			return true;
 		}
 		return false;
@@ -279,7 +279,7 @@ bool Stone::Move_Left(bool push_into_wall)
 			)
 		{
 			//如果是怪物推，下一个石头也要移动
-			if (push_into_wall)
+			if (force_push)
 			{
 				iter->second->Move_Left(true);
 				this->world_X -= 1;
@@ -299,7 +299,7 @@ bool Stone::Move_Left(bool push_into_wall)
 			)
 		{
 			//如果是怪物推，下一个石头也要移动
-			if (push_into_wall)
+			if (force_push)
 			{
 				iter->second->Move_Left(true);
 				this->world_X -= 1;
@@ -373,19 +373,19 @@ bool Stone::Move_Left(bool push_into_wall)
 	return true;
 }
 
-bool Stone::Move_Right(bool push_into_wall)
+bool Stone::Move_Right(bool force_push)
 {
 	//判断下一个是否是墙
 	if (this->world_X + 1 > GAMEPANEL_WIDTH - 1 || WALL[this->world_Y][this->world_X + 1] == -1)
 	{
-		if (push_into_wall)
+		if (force_push)
 		{
-			this->out_of_map = false;
+			this->out_of_map = true;
 			return true;
 		}
 		if (this->world_X == GAMEPANEL_WIDTH - 1 && this->world_Y == GAMEPANEL_HEIGHT - 1)
 		{
-			this->out_of_map = false;
+			this->out_of_map = true;
 			return true;
 		}
 		return false;
@@ -401,7 +401,7 @@ bool Stone::Move_Right(bool push_into_wall)
 			)
 		{
 			//如果是怪物推，下一个石头也要移动
-			if (push_into_wall)
+			if (force_push)
 			{
 				iter->second->Move_Right(true);
 				this->world_X += 1;
@@ -421,7 +421,7 @@ bool Stone::Move_Right(bool push_into_wall)
 			)
 		{
 			//如果是怪物推，下一个玩家也要移动
-			if (push_into_wall)
+			if (force_push)
 			{
 				iter->second->Move_Right(true);
 				this->world_X += 1;

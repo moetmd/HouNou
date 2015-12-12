@@ -1,8 +1,16 @@
 
 #include "DirectX.h"
+#include <list>
 
-#define DAY true;
-#define NIGHT false;
+#define DAY true
+#define NIGHT false
+
+#define MONSTER_TURN 1
+#define PLAYER_TURN 2
+#define AI_TURN 3
+
+
+using namespace std;
 
 const int SCREENW = WINDOW_WIDTH;
 const int SCREENH = WINDOW_HEIGHT;
@@ -10,26 +18,46 @@ const int SCREENH = WINDOW_HEIGHT;
 //最大石头数
 const int MAX_STONE_NUM = 11;
 
+//回合数
+int rounds;
+
+//当前回合
+int current_turn;
 
 LPD3DXSPRITE spriteobj = NULL;
 
 //sprites
-Player player_1;
-
-Monster monster_1;
 Monster* monster;
 map<int, Sprite*> stones;
+
+Player* player_1;
+Player* player_2;
+Player* player_3;
+Player* player_4;
+
+AI_Player* ai_player_1;
+AI_Player* ai_player_2;
+AI_Player* ai_player_3;
+AI_Player* ai_player_4;
+
+//全局维护的所有player容器，包括玩家和AI
 map<int, Sprite*> players;
 
-//决定是不是怪物的回合
-bool is_monster_turn = false;
+//在游戏过程中维护的player容器，分为玩家和AI两种
+map<int, Player*> Human_Players;
+map<int, Player*> AI_Players;
+
+  //游戏过程中用于控制的iter
+map<int, Player*>::iterator hp_iter;
+map<int, Player*>::iterator ai_iter;
+
 
 //game state
-bool						game_pause = true;         //游戏是否暂停
-bool						game_over = true;			//游戏是否结束
+bool	game_pause = true;         //游戏是否暂停
+bool	game_over = true;			//游戏是否结束
 
 //sound
-CDirectMusic g_sound_walking;
+
 CDirectMusic g_sound_bgm;
 
 //textures
@@ -38,15 +66,16 @@ CDirectMusic g_sound_bgm;
 //font
 ID3DXFont* g_pFont = NULL;
 
+//游戏世界表层
 LPDIRECT3DSURFACE9 gameworld = NULL;
 
 //settings for the scoller
-const int TILEWIDTH = 64;
+const int TILEWIDTH = 64;   //块长宽
 const int TILEHEIGHT = 64;
-const int MAPWIDTH = 18;
+const int MAPWIDTH = 18;    //游戏世界长宽
 const int MAPHEIGHT = 15;
 
-const int GAMEPANEL_WIDTH = 16;
+const int GAMEPANEL_WIDTH = 16;  //游戏区域长宽
 const int GAMEPANEL_HEIGHT = 11;
 
 //scrolling window size 
@@ -67,11 +96,8 @@ long start = 0;
 
 
 //position caculation
-float old_hero_x = 0;
-float old_hero_y = 0;
-float old_world_x = 0;
-float old_world_y = 0;
-bool hero_walking = false;
+
+
 
 
 int MAPDATA[MAPWIDTH*MAPHEIGHT] = {
@@ -92,6 +118,7 @@ int MAPDATA[MAPWIDTH*MAPHEIGHT] = {
 	0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0
 };
 
+//保存墙和血池、以及石头的初始位置
 int WALL[GAMEPANEL_HEIGHT][GAMEPANEL_WIDTH] = {
 	{  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1,-1 },
 	{  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,-1,-1,-1 },
@@ -109,61 +136,73 @@ int WALL[GAMEPANEL_HEIGHT][GAMEPANEL_WIDTH] = {
 
 
 
-
+//游戏初始化
 bool Game_Init()
 {
+	//设置游戏状态为 非结束
 	game_over = false;
+
+	//初始化游戏回合数
+	rounds = 1;
+
+	//当前回合设置为 玩家回合
+	current_turn = PLAYER_TURN;
 
 	//create sprite object
 	D3DXCreateSprite(g_pd3dDevice, &spriteobj);
 
-	//load texture
-// 	imgHero = LoadTexture(L"GameMedia\\027_00.png");
-// 	if (!imgHero)
-// 		return false;
+	//创建玩家角色
+	player_1 = new Player(6);
+	player_1->Set_img(L"GameMedia\\027_00.png");
+	player_2 = new Player(3);
+	player_2->Set_img(L"GameMedia\\027_00.png");
+	player_3 = new Player(2);
+	player_3->Set_img(L"GameMedia\\027_00.png");
+	player_4 = new Player(4);
+	player_4->Set_img(L"GameMedia\\027_00.png");
 
-	/*Player player_1;*/
+	//添加玩家角色到玩家list
+	Human_Players[1] = player_1;
+	Human_Players[2] = player_2;
 	
-	player_1.Set_img(L"GameMedia\\027_00.png");
 
-	//set properties for sprites
-	player_1.world_X = GAMEPANEL_WIDTH - 1;
-	player_1.world_Y = GAMEPANEL_HEIGHT - 1;
-	player_1.width = player_1.height = 96;
-	player_1.columns = 4;
-	player_1.startframe = 0;
-	player_1.endframe = 0;
-	player_1.foot = 20;
-	player_1.day_step = 6;
-	player_1.night_step = 7 - player_1.night_step;
+	//添加玩家角色到全局Map
+	players[1] = player_1;
+	players[2] = player_2;
+	
 
-	players[1] = &player_1;
+	//创建AI
+	ai_player_1 = new AI_Player(6);
+	ai_player_1->Set_img(L"GameMedia\\010_00.png");
+	ai_player_2 = new AI_Player(3);
+	ai_player_2->Set_img(L"GameMedia\\010_00.png");
+	ai_player_3 = new AI_Player(2);
+	ai_player_3->Set_img(L"GameMedia\\010_00.png");
+	ai_player_4 = new AI_Player(4);
+	ai_player_4->Set_img(L"GameMedia\\010_00.png");
 
-// 	monster->Set_img(L"GameMedia\\001_00.png");
-// 	monster->width = monster->height = 96;
-// 	monster->columns = 4;
-// 	monster->foot = 20;
-// 	monster->world_X = 0;
-// 	monster->world_Y = 0;
-// 	monster->face_to = 2;
+	//添加AI到全局MAP
+	players[5] = ai_player_1;
+	players[6] = ai_player_2;
 
-	monster_1.Set_img(L"GameMedia\\001_00.png");
-	monster_1.width = monster_1.height = 96;
-	monster_1.columns = 4;
-	monster_1.foot = 20;
-	monster_1.world_X = 0;
-	monster_1.world_Y = 0;
-	monster_1.face_to = 2;
-	monster = &monster_1;
+
+	//添加AI到AI list
+	AI_Players[1] = ai_player_1;
+	AI_Players[2] = ai_player_2;
+	
+
+	
+
+	//创建怪物
+	monster = new Monster();
+	monster->Set_img(L"GameMedia\\001_00.png");
 
 	//create font
 	if (FAILED(D3DXCreateFont(g_pd3dDevice, 36, 0, 0, 1, false, DEFAULT_CHARSET,
 		OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, 0, _T("微软雅黑"), &g_pFont)))
 		return false;
 
-	//create Sound
-// 	if (!g_sound_walking.CreateSound("GameMedia\\Sound\\walking.wav", 0))
-// 		return false;
+
 	if (!g_sound_bgm.CreateSound("GameMedia\\Sound\\bgm.wav", UGP_INFINITE))
 		return false;
 
@@ -171,17 +210,14 @@ bool Game_Init()
 
 	BuildGameWorld();
 
-	old_hero_x = player_1.world_X;
-	old_hero_y = player_1.world_Y;
-	old_world_x = ScrollX;
-	old_world_y = ScrollY;
+	Stones_Init();
 
 	g_sound_bgm.Play();
 
-	Stones_Init();
-
-
 	start = GetTickCount();
+
+	hp_iter = Human_Players.begin();
+	ai_iter = AI_Players.begin();
 
 	return true;
 }
@@ -194,6 +230,73 @@ void Game_Update(HWND window)
 	if (!g_pd3dDevice)
 		return;
 
+
+	//update input devices
+	g_pDInput->GetInput();
+	
+	int current_rounds = rounds;
+
+	if (rounds == 2)
+	{
+		players[3] = player_3;
+		players[4] = player_4;
+
+		players[7] = ai_player_3;
+		players[8] = ai_player_4;
+
+		Human_Players[3] = player_3;
+		Human_Players[4] = player_4;
+
+		AI_Players[3] = ai_player_3;
+		AI_Players[4] = ai_player_4;
+
+	}
+
+	//玩家的行为
+	if (current_turn == PLAYER_TURN && !Human_Players.empty() && Human_Players.size() != 0)
+	{
+		
+		if (g_pDInput->IsKeyDown(DIK_UPARROW))
+		{
+			if (hp_iter->second->Move_Up(false) )
+				hp_iter->second->current_step -= 1;
+		}
+
+		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
+		{
+			if (hp_iter->second->Move_Down(false))
+				hp_iter->second->current_step -= 1;
+
+		}
+
+		if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
+		{
+			if (hp_iter->second->Move_Left(false))
+				hp_iter->second->current_step -= 1;
+
+		}
+
+		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
+		{
+			if (hp_iter->second->Move_Right(false))
+				hp_iter->second->current_step -= 1;
+
+		}
+
+		if (g_pDInput->IsKeyDown(DIK_SPACE))
+		{
+			if (hp_iter == --Human_Players.end())
+			{
+				current_turn = AI_TURN;
+				//hp_iter = Human_Players.begin();
+			}
+			else
+			{
+				++hp_iter;
+			}
+		}
+	}
+
 	//escape key exits
 	if (g_pDInput->IsKeyDown(DIK_ESCAPE))
 	{
@@ -202,54 +305,39 @@ void Game_Update(HWND window)
 		g_sound_bgm.Stop();
 	}
 
-	
-
-	//update input devices
-	g_pDInput->GetInput();
-	//move with keys
-
-	if (!is_monster_turn)
+	//AI的行为
+	if (current_turn == AI_TURN)
 	{
-		if (g_pDInput->IsKeyDown(DIK_UPARROW))
+		//如果AI都死了直接进入怪物的回合
+		if (!AI_Players.empty() && AI_Players.size() != 0)
 		{
-			if (player_1.Move_Up(false))
-				player_1.current_step -= 1;
+			ai_iter->second->Move_Up(false);
+			ai_iter->second->current_step -= 1;
+
+			if (ai_iter == --AI_Players.end())
+			{
+				current_turn = MONSTER_TURN;
+				//先获取行动步数
+				monster->current_step = 0;
+				monster->Get_CurrentStep();
+			}
+			else
+			{
+				++ai_iter;
+			}
 		}
-
-		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
+		else
 		{
-			if (player_1.Move_Down(false))
-				player_1.current_step -= 1;
-
-		}
-
-		if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
-		{
-			if (player_1.Move_Left(false))
-				player_1.current_step -= 1;
-
-		}
-
-		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
-		{
-			if (player_1.Move_Right(false))
-				player_1.current_step -= 1;
-
-		}
-
-		if (g_pDInput->IsKeyDown(DIK_SPACE))
-		{
+			current_turn = MONSTER_TURN;
 			//先获取行动步数
 			monster->current_step = 0;
 			monster->Get_CurrentStep();
-			is_monster_turn = true;
 		}
 	}
 
 	//怪物的行为
-	if (is_monster_turn)
+	if (current_turn == MONSTER_TURN)
 	{
-		//先获取行动步数
 		
 	
 		switch (monster->step)
@@ -262,10 +350,11 @@ void Game_Update(HWND window)
 			{
 				monster->current_step++;
 			}
-			if (monster->kill >= monster->step || monster->current_step > 20)
+			if (monster->kill >= monster->step || monster->current_step >= 20)
 			{
 				monster->kill = 0;
-				is_monster_turn = false;
+				rounds += 1;
+				current_turn = PLAYER_TURN;
 			}
 			break;
 
@@ -275,21 +364,19 @@ void Game_Update(HWND window)
 			{
 				monster->current_step++;
 			}
-			if (monster->current_step > monster->step)
+			if (monster->current_step >= monster->step)
 			{
-				is_monster_turn = false;
+				monster->kill = 0;
+				rounds += 1;
+				current_turn = PLAYER_TURN;
 			}
 			break;
 		}
-
-		
-
 	}
 
 	
-
-	map<int, Sprite*>::iterator iter;
-	for (iter = stones.begin(); iter != stones.end();)
+	//删除出界的石头
+	for (map<int, Sprite*>::iterator iter = stones.begin(); iter != stones.end();)
 	{
 		if (iter->second->out_of_map || WALL[iter->second->world_Y][iter->second->world_X] == 1)
 			stones.erase(iter++);
@@ -297,6 +384,47 @@ void Game_Update(HWND window)
 			++iter;
 	}
 
+	//从全局玩家map中删除已死亡的角色
+	for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end();)
+	{
+		if (iter->second->killed)
+			players.erase(iter++);
+		else
+			++iter;
+	}
+
+	//从人类玩家map中删除已死亡角色
+	for (map<int, Player*>::iterator iter = Human_Players.begin(); iter != Human_Players.end();)
+	{
+		if (iter->second->killed)
+			Human_Players.erase(iter++);
+		else
+			++iter;
+	}
+
+	//从AI玩家map中删除已死亡角色
+	for (map<int, Player*>::iterator iter = AI_Players.begin(); iter != AI_Players.end();)
+	{
+		if (iter->second->killed)
+			AI_Players.erase(iter++);
+		else
+			++iter;
+	}
+
+	//如果人类玩家数为0，则游戏结束
+	if (Human_Players.empty() || Human_Players.size() == 0)
+	{
+		game_over = true;
+		g_currentGUI = GUI_START_SCREEN;
+		g_sound_bgm.Stop();
+	}
+
+	//重新指向起点，准备下一次游戏循环
+	if (current_rounds != rounds)
+	{
+		hp_iter = Human_Players.begin();
+		ai_iter = AI_Players.begin();
+	}
 	
 }
 
@@ -305,24 +433,30 @@ void Game_Render()
 {	
 	start = GetTickCount();
 
-		ScrollScreen();
+	ScrollScreen();
 
-		spriteobj->Begin(D3DXSPRITE_ALPHABLEND);
+	spriteobj->Begin(D3DXSPRITE_ALPHABLEND);
 
-		map<int, Sprite*>::iterator iter;
-		for (iter = stones.begin(); iter != stones.end(); iter++)
+	map<int, Sprite*>::iterator iter;
+	for (iter = stones.begin(); iter != stones.end(); iter++)
+	{
+		if (iter->second->visibal)
+			iter->second->Draw();
+	}
+
+	monster->Draw();
+
+	for (iter = players.begin(); iter != players.end(); iter++)
+	{
+		if (iter->second->visibal)
 		{
-			if (iter->second->visibal)
-				iter->second->Draw();
+			iter->second->Draw();
 		}
+	}
 
-		monster->Draw();
-		player_1.Draw();
 
-		spriteobj->End();
+	spriteobj->End();
 
-		if (hero_walking)
-			g_sound_walking.Stop();
 
 }
 
@@ -346,7 +480,7 @@ void Game_Clean()
 	SAFE_DELETE(monster);
 
 	g_sound_bgm.Shutdown();
-	g_sound_walking.Shutdown();
+
 
 }
 

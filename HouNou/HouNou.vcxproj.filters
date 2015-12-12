@@ -36,9 +36,6 @@
     <ClInclude Include="DirectX.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="Sprite.h">
-      <Filter>SpriteClasses</Filter>
-    </ClInclude>
     <ClInclude Include="Game_GUI.h">
       <Filter>GameCore</Filter>
     </ClInclude>
@@ -47,6 +44,9 @@
     </ClInclude>
     <ClInclude Include="TileUtil.h">
       <Filter>GameCore</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>SpriteClasses</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +85,9 @@
     </ClCompile>
     <ClCompile Include="TileUtil.cpp">
       <Filter>GameCore</Filter>
+    </ClCompile>
+    <ClCompile Include="AI_Player.cpp">
+      <Filter>SpriteClasses</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

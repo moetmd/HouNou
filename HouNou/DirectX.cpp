@@ -135,8 +135,8 @@ HRESULT Objects_Init()
 //--------------------------------------------------------------------------------------------------
 void	Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 {
-	
-	Game_Update(hwnd);
+	if(!game_over)
+		Game_Update(hwnd);
 }
 
 

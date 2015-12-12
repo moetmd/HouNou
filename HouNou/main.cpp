@@ -69,9 +69,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine,
 		}
 		else
 		{
-			if (GetTickCount() - start > 90)
+			if (GetTickCount() - start > 120)
 			{
-				start = GetTickCount();
+				//start = GetTickCount();
 				Direct3D_Update(hwnd, fTimeDelta);         //调用更新函数，进行画面的更新
 				Direct3D_Render(hwnd, fTimeDelta);			//调用渲染函数，进行画面的渲染			
 

@@ -39,7 +39,7 @@ public:
 
 	//是否死亡
 	bool killed;
-	
+
 	//出界
 	bool out_of_map;
 
@@ -82,13 +82,22 @@ public:
 	int night_step;
 	int current_step;
 
-	
+	Player(int);
+	Player() {}
 
 	virtual bool Move_Up(bool);
 	virtual bool Move_Down(bool);
 	virtual bool Move_Left(bool);
 	virtual bool Move_Right(bool);
 };
+
+//AI玩家类
+class AI_Player :public Player
+{
+public:
+	AI_Player(int d) :Player(d) {};
+};
+
 
 
 //怪物类
@@ -101,7 +110,7 @@ public:
 	int current_step;
 	bool Action();
 
-
+	Monster();
 
 	void Get_CurrentStep();
 
@@ -128,7 +137,7 @@ private:
 class Stone :public Sprite
 {
 public:
-	
+
 	void Draw();
 	bool Move_Up(bool);
 	bool Move_Down(bool);

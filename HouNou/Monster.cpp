@@ -6,6 +6,17 @@
 #define DOWN 3
 #define LEFT 4
 
+Monster::Monster()
+{
+	width = height = 96;
+	columns = 4;
+	foot = 20;
+	world_X = 0;
+	world_Y = 0;
+	face_to = 2;
+	kill = 0;
+}
+
 //MonsterÀà
 void Monster::Get_CurrentStep()
 {
@@ -79,13 +90,13 @@ int Monster::Look_Around()
 
 int Monster::Change_Direction(int A, int B, int C, int Face_to)
 {
-	if (A == -1)
+	if (A == 99)
 	{
 		if (B > C)
 		{
 			return Face_to;
 		}
-		else 
+		else
 			if (B < C)
 			{
 				Face_to += 1;
@@ -93,37 +104,37 @@ int Monster::Change_Direction(int A, int B, int C, int Face_to)
 			else
 				return Face_to;
 	}
-
-	if (B == -1)
-	{
-		if (A > C)
+	else
+		if (B == 99)
 		{
-			return Face_to;
-		}
-		else
-			if (A < C)
+			if (A > C)
 			{
-				Face_to -= 1;
+				return Face_to;
 			}
 			else
-				return Face_to;
+				if (A < C)
+				{
+					Face_to -= 1;
+				}
+				else
+					return Face_to;
 
-	}
-
-	if (C == -1)
-	{
-		if (A > B)
-		{
-			Face_to += 1;
 		}
 		else
-			if (A < B)
+			if (C == 99)
 			{
-				Face_to -= 1;
+				if (A > B)
+				{
+					Face_to += 1;
+				}
+				else
+					if (A < B)
+					{
+						Face_to -= 1;
+					}
+					else
+						return Face_to;
 			}
-			else
-				return Face_to;
-	}
 
 	if (Face_to > 4)
 	{
@@ -183,12 +194,12 @@ int Monster::Look_Up()
 			{
 				if (this->world_Y - iter->second->world_Y < distance)
 				{
-					return -1;
+					return 99;
 				}
 			}
 		}
 	else
-		return -1;
+		return 99;
 
 	return distance;
 }
@@ -217,12 +228,12 @@ int Monster::Look_Down()
 			{
 				if (iter->second->world_Y - this->world_Y < distance)
 				{
-					return -1;
+					return 99;
 				}
 			}
 		}
 	else
-		return -1;
+		return 99;
 
 	return distance;
 }
@@ -251,12 +262,12 @@ int Monster::Look_Left()
 			{
 				if (this->world_X - iter->second->world_X < distance)
 				{
-					return -1;
+					return 99;
 				}
 			}
 		}
 	else
-		return -1;
+		return 99;
 
 	return distance;
 }
@@ -284,12 +295,12 @@ int Monster::Look_Right()
 			{
 				if (iter->second->world_X - this->world_X  < distance)
 				{
-					return -1;
+					return 99;
 				}
 			}
 		}
 	else
-		return -1;
+		return 99;
 
 
 	return distance;
@@ -317,6 +328,7 @@ bool Monster::Move_Up()
 		{
 			iter->second->killed = true;
 			this->world_Y -= 1;
+			this->kill += 1;
 			return true;
 		}
 	}
@@ -375,9 +387,10 @@ bool Monster::Move_Up()
 				&& y - 1 == iter->second->world_Y
 				)
 			{
-				iter->second->Move_Up(true);
+				iter->second->killed = true;
 				this->world_X = x;
 				this->world_Y = y - 1;
+				this->kill += 1;
 				return true;
 			}
 		}
@@ -392,7 +405,7 @@ bool Monster::Move_Up()
 bool Monster::Move_Down()
 {
 	//±ß½ç¼ì²â
-	if (this->world_Y + 1 > GAMEPANEL_HEIGHT || WALL[this->world_Y + 1][this->world_X] == -1)
+	if (this->world_Y + 1 > GAMEPANEL_HEIGHT - 1 || WALL[this->world_Y + 1][this->world_X] == -1)
 	{
 		this->world_X = GAMEPANEL_WIDTH - 1 - this->world_X;
 		this->world_Y = GAMEPANEL_HEIGHT - 1 - this->world_Y;
@@ -409,6 +422,7 @@ bool Monster::Move_Down()
 		{
 			iter->second->killed = true;
 			this->world_Y += 1;
+			this->kill += 1;
 			return true;
 		}
 	}
@@ -467,9 +481,10 @@ bool Monster::Move_Down()
 				&& y + 1 == iter->second->world_Y
 				)
 			{
-				iter->second->Move_Down(true);
+				iter->second->killed = true;
 				this->world_X = x;
 				this->world_Y = y + 1;
+				this->kill += 1;
 				return true;
 			}
 		}
@@ -502,6 +517,7 @@ bool Monster::Move_Left()
 		{
 			iter->second->killed = true;
 			this->world_X -= 1;
+			this->kill += 1;
 			return true;
 		}
 	}
@@ -560,9 +576,10 @@ bool Monster::Move_Left()
 				&& y == iter->second->world_Y
 				)
 			{
-				iter->second->Move_Left(true);
+				iter->second->killed = true;
 				this->world_X = x - 1;
 				this->world_Y = y;
+				this->kill += 1;
 				return true;
 			}
 		}
@@ -595,6 +612,7 @@ bool Monster::Move_Right()
 		{
 			iter->second->killed = true;
 			this->world_X += 1;
+			this->kill += 1;
 			return true;
 		}
 	}
@@ -652,9 +670,10 @@ bool Monster::Move_Right()
 				&& y == iter->second->world_Y
 				)
 			{
-				iter->second->Move_Right(true);
+				iter->second->killed = true;
 				this->world_X = x + 1;
 				this->world_Y = y;
+				this->kill += 1;
 				return true;
 			}
 		}

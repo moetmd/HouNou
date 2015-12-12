@@ -1,5 +1,20 @@
 #include "DirectX.h"
 
+Player::Player(int d_step)
+{
+	world_X = GAMEPANEL_WIDTH - 1;
+	world_Y = GAMEPANEL_HEIGHT - 1;
+	width = height = 96;
+	columns = 4;
+	startframe = 0;
+	endframe = 0;
+	foot = 20;
+	day_step = d_step;
+	night_step = 7 - d_step;
+	current_step = day_step;
+}
+
+
 bool Player::Move_Up(bool force_push)
 {
 

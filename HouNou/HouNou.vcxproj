@@ -157,6 +157,7 @@
     <ClInclude Include="TileUtil.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AI_Player.cpp" />
     <ClCompile Include="CDirectMusic.cpp" />
     <ClCompile Include="D3DGUIClass.cpp" />
     <ClCompile Include="DirectInputClass.cpp" />

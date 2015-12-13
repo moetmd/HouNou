@@ -97,7 +97,7 @@ bool Game_Init();
 void Game_Update(HWND window);
 
 //游戏画面渲染
-void Game_Render();
+void Game_Render(HWND hwnd);
 
 //游戏资源清理
 void Game_Clean();

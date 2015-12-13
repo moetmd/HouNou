@@ -175,7 +175,7 @@ void Direct3D_Render(HWND hwnd, FLOAT fTimeDelta)
 		ProcessGUI(g_OptionGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
 	else if (g_currentGUI == GAME_RUN)
-		Game_Render();
+		Game_Render(hwnd);
 	else
 		ProcessGUI(g_MainGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);

@@ -24,6 +24,11 @@ int rounds;
 //当前回合
 int current_turn;
 
+//game state
+bool	game_pause = true;         //游戏是否暂停
+bool	game_over = true;			//游戏是否结束
+
+
 LPD3DXSPRITE spriteobj = NULL;
 
 //sprites
@@ -51,10 +56,8 @@ map<int, Player*> AI_Players;
 map<int, Player*>::iterator hp_iter;
 map<int, Player*>::iterator ai_iter;
 
+//存储位置的，用于恢复位置
 
-//game state
-bool	game_pause = true;         //游戏是否暂停
-bool	game_over = true;			//游戏是否结束
 
 //sound
 
@@ -64,7 +67,7 @@ CDirectMusic g_sound_bgm;
 
 
 //font
-ID3DXFont* g_pFont = NULL;
+LPD3DXFONT g_pFont = NULL;
 
 //游戏世界表层
 LPDIRECT3DSURFACE9 gameworld = NULL;
@@ -141,6 +144,7 @@ bool Game_Init()
 {
 	//设置游戏状态为 非结束
 	game_over = false;
+	game_pause = false;
 
 	//初始化游戏回合数
 	rounds = 1;
@@ -203,6 +207,7 @@ bool Game_Init()
 		return false;
 
 
+
 	if (!g_sound_bgm.CreateSound("GameMedia\\Sound\\bgm.wav", UGP_INFINITE))
 		return false;
 
@@ -218,6 +223,8 @@ bool Game_Init()
 
 	hp_iter = Human_Players.begin();
 	ai_iter = AI_Players.begin();
+
+
 
 	return true;
 }
@@ -236,21 +243,7 @@ void Game_Update(HWND window)
 	
 	int current_rounds = rounds;
 
-	if (rounds == 2)
-	{
-		players[3] = player_3;
-		players[4] = player_4;
-
-		players[7] = ai_player_3;
-		players[8] = ai_player_4;
-
-		Human_Players[3] = player_3;
-		Human_Players[4] = player_4;
-
-		AI_Players[3] = ai_player_3;
-		AI_Players[4] = ai_player_4;
-
-	}
+	
 
 	//玩家的行为
 	if (current_turn == PLAYER_TURN && !Human_Players.empty() && Human_Players.size() != 0)
@@ -258,42 +251,55 @@ void Game_Update(HWND window)
 		
 		if (g_pDInput->IsKeyDown(DIK_UPARROW))
 		{
-			if (hp_iter->second->Move_Up(false) )
-				hp_iter->second->current_step -= 1;
+			if (hp_iter->second->Move_Up(false))
+				if(!hp_iter->second->Is_InBlood())
+					hp_iter->second->current_step -= 1;
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
 		{
 			if (hp_iter->second->Move_Down(false))
-				hp_iter->second->current_step -= 1;
+				if (!hp_iter->second->Is_InBlood()) //如果不在血池里，则减少步数，在血池里不减少步数
+					hp_iter->second->current_step -= 1;
 
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
 		{
 			if (hp_iter->second->Move_Left(false))
-				hp_iter->second->current_step -= 1;
+				if (!hp_iter->second->Is_InBlood())
+					hp_iter->second->current_step -= 1;
 
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
 		{
 			if (hp_iter->second->Move_Right(false))
-				hp_iter->second->current_step -= 1;
+				if (!hp_iter->second->Is_InBlood())
+					hp_iter->second->current_step -= 1;
 
 		}
 
+		//确认当前角色位置，并继续
 		if (g_pDInput->IsKeyDown(DIK_SPACE))
 		{
-			if (hp_iter == --Human_Players.end())
-			{
-				current_turn = AI_TURN;
-				//hp_iter = Human_Players.begin();
-			}
-			else
-			{
-				++hp_iter;
-			}
+			if(!hp_iter->second->Is_OverPlayer)//如果当前角色没有和其他角色重叠，则继续
+				if (hp_iter == --Human_Players.end())
+				{
+					current_turn = AI_TURN;
+					//hp_iter = Human_Players.begin();
+				}
+				else
+				{
+					++hp_iter;
+
+				}
+		}
+
+		//如果走错了，按C恢复位置
+		if (g_pDInput->IsKeyDown(DIK_C))
+		{
+			
 		}
 	}
 
@@ -419,9 +425,35 @@ void Game_Update(HWND window)
 		g_sound_bgm.Stop();
 	}
 
+	//如果是第二局，则添加剩余的角色
+	if (rounds == 2)
+	{
+		players[3] = player_3;
+		players[4] = player_4;
+
+		players[7] = ai_player_3;
+		players[8] = ai_player_4;
+
+		Human_Players[3] = player_3;
+		Human_Players[4] = player_4;
+
+		AI_Players[3] = ai_player_3;
+		AI_Players[4] = ai_player_4;
+
+	}
+
+
 	//重新指向起点，准备下一次游戏循环
 	if (current_rounds != rounds)
 	{
+		//根据回合数确定角色的移动步数
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			rounds % 2 == 0 ?
+				((Player*)(iter->second))->current_step = ((Player*)(iter->second))->night_step :
+				((Player*)(iter->second))->current_step = ((Player*)(iter->second))->day_step;
+		}
+
 		hp_iter = Human_Players.begin();
 		ai_iter = AI_Players.begin();
 	}
@@ -429,7 +461,7 @@ void Game_Update(HWND window)
 }
 
 
-void Game_Render()
+void Game_Render(HWND hwnd)
 {	
 	start = GetTickCount();
 
@@ -437,8 +469,8 @@ void Game_Render()
 
 	spriteobj->Begin(D3DXSPRITE_ALPHABLEND);
 
-	map<int, Sprite*>::iterator iter;
-	for (iter = stones.begin(); iter != stones.end(); iter++)
+	
+	for (map<int, Sprite*>::iterator iter = stones.begin(); iter != stones.end(); iter++)
 	{
 		if (iter->second->visibal)
 			iter->second->Draw();
@@ -446,14 +478,23 @@ void Game_Render()
 
 	monster->Draw();
 
-	for (iter = players.begin(); iter != players.end(); iter++)
+	RECT formatRect;
+	GetClientRect(hwnd, &formatRect);
+
+	for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); iter++)
 	{
 		if (iter->second->visibal)
 		{
 			iter->second->Draw();
+			
+			formatRect.top = iter->second->Get_RealPosY();
+			formatRect.left = iter->second->Get_RealPosX(); 
+			wchar_t g_strStep[30] = {0};
+			int charCount = swprintf_s(g_strStep, 20, _T("%2d"), ((Player*) (iter->second))->current_step);
+			g_pFont->DrawText(NULL, g_strStep, charCount, 
+				&formatRect, DT_TOP | DT_LEFT, D3DCOLOR_RGBA(0, 0, 0, 255));
 		}
 	}
-
 
 	spriteobj->End();
 

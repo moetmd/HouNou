@@ -85,10 +85,13 @@ public:
 	Player(int);
 	Player() {}
 
+	virtual bool Is_InBlood();
+	virtual bool Is_OverPlayer();
 	virtual bool Move_Up(bool);
 	virtual bool Move_Down(bool);
 	virtual bool Move_Left(bool);
 	virtual bool Move_Right(bool);
+
 };
 
 //AIÕÊº“¿‡

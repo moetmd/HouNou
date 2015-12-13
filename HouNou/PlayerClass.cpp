@@ -12,11 +12,37 @@ Player::Player(int d_step)
 	day_step = d_step;
 	night_step = 7 - d_step;
 	current_step = day_step;
+
 }
 
+bool Player::Is_InBlood()
+{
+	if ( WALL[this->world_Y][this->world_X] == 1 )
+		return true;
+	else
+		return false;
+}
+
+bool Player::Is_OverPlayer()
+{
+	int num = 0;
+	for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+	{
+		if (iter->second->world_X == this->world_X && iter->second->world_Y == this->world_Y)
+			num++;
+	}
+
+	if (num >= 2)
+		return true;
+	else
+		return false;
+}
 
 bool Player::Move_Up(bool force_push)
 {
+	//如果步数用完，则不能再走
+	if (this->current_step <= 0)
+		return false;
 
 	//边界检测
 	if (this->world_Y - 1 < 0 || WALL[this->world_Y - 1][this->world_X] == -1)
@@ -65,6 +91,9 @@ bool Player::Move_Up(bool force_push)
 
 bool Player::Move_Down(bool force_push)
 {
+	//如果步数用完，则不能再走
+	if (this->current_step <= 0)
+		return false;
 
 	//边界检测
 	if (this->world_Y + 1 > GAMEPANEL_HEIGHT - 1 || WALL[this->world_Y + 1][this->world_X] == -1)
@@ -112,6 +141,9 @@ bool Player::Move_Down(bool force_push)
 
 bool Player::Move_Left(bool force_push)
 {
+	//如果步数用完，则不能再走
+	if (this->current_step <= 0)
+		return false;
 
 	//边界检测
 	if (this->world_X - 1 < 0 || WALL[this->world_Y][this->world_X - 1] == -1)
@@ -159,6 +191,9 @@ bool Player::Move_Left(bool force_push)
 
 bool Player::Move_Right(bool force_push)
 {
+	//如果步数用完，则不能再走
+	if (this->current_step <= 0)
+		return false;
 
 	//边界检测
 	if (this->world_X + 1 > GAMEPANEL_WIDTH - 1 || WALL[this->world_Y][this->world_X + 1] == -1)

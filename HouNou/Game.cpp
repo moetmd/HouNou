@@ -1,14 +1,16 @@
 
 #include "DirectX.h"
-#include <list>
 
-#define DAY true
-#define NIGHT false
+
 
 #define MONSTER_TURN 1
 #define PLAYER_TURN 2
 #define AI_TURN 3
 
+#define  UP 1
+#define  DOWN 2
+#define  LEFT 3
+#define  RIGHT 4
 
 using namespace std;
 
@@ -252,42 +254,62 @@ void Game_Update(HWND window)
 		if (g_pDInput->IsKeyDown(DIK_UPARROW))
 		{
 			if (hp_iter->second->Move_Up(false))
-				if(!hp_iter->second->Is_InBlood())
+			{
+				if (!hp_iter->second->Is_InBlood())
+				{
 					hp_iter->second->current_step -= 1;
+					hp_iter->second->startframe = 12;
+					hp_iter->second->endframe = hp_iter->second->startframe + 3;
+				}
+			}
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
 		{
 			if (hp_iter->second->Move_Down(false))
+			{
 				if (!hp_iter->second->Is_InBlood()) //如果不在血池里，则减少步数，在血池里不减少步数
+				{
 					hp_iter->second->current_step -= 1;
+					hp_iter->second->startframe = 0;
+					hp_iter->second->endframe = hp_iter->second->startframe + 3;
+				}
+			}
 
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
 		{
 			if (hp_iter->second->Move_Left(false))
+			{
 				if (!hp_iter->second->Is_InBlood())
 					hp_iter->second->current_step -= 1;
+
+				
+			}
 
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
 		{
 			if (hp_iter->second->Move_Right(false))
+			{
 				if (!hp_iter->second->Is_InBlood())
 					hp_iter->second->current_step -= 1;
+
+				
+			}
 
 		}
 
 		//确认当前角色位置，并继续
 		if (g_pDInput->IsKeyDown(DIK_SPACE))
 		{
-			if(!hp_iter->second->Is_OverPlayer)//如果当前角色没有和其他角色重叠，则继续
+			if(!hp_iter->second->Is_OverPlayer() && !hp_iter->second->Is_InBlood())//如果当前角色没有和其他角色重叠并且不在血池中，则继续
 				if (hp_iter == --Human_Players.end())
 				{
 					current_turn = AI_TURN;
-					//hp_iter = Human_Players.begin();
+					
 				}
 				else
 				{

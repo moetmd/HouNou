@@ -7,7 +7,7 @@ Sprite::Sprite()
 	world_Y = 0;
 
 	frame = 0;
-	columns = 1;
+	columns = 4;
 	width = 0;
 	height = 0;
 	foot = 0;

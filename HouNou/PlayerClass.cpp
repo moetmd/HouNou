@@ -44,6 +44,14 @@ bool Player::Move_Up(bool force_push)
 	if (this->current_step <= 0)
 		return false;
 
+	//如果只剩下1步，则不能越过其他玩家
+	if (this->current_step == 1)
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (this->world_Y - 1 == iter->second->world_Y && this->world_X == iter->second->world_X)
+				return false;
+		}
+
 	//边界检测
 	if (this->world_Y - 1 < 0 || WALL[this->world_Y - 1][this->world_X] == -1)
 	{
@@ -95,6 +103,14 @@ bool Player::Move_Down(bool force_push)
 	if (this->current_step <= 0)
 		return false;
 
+	//如果只剩下1步，则不能越过其他玩家
+	if (this->current_step == 1)
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (this->world_Y + 1 == iter->second->world_Y && this->world_X == iter->second->world_X)
+				return false;
+		}
+
 	//边界检测
 	if (this->world_Y + 1 > GAMEPANEL_HEIGHT - 1 || WALL[this->world_Y + 1][this->world_X] == -1)
 	{
@@ -145,6 +161,14 @@ bool Player::Move_Left(bool force_push)
 	if (this->current_step <= 0)
 		return false;
 
+	//如果只剩下1步，则不能越过其他玩家
+	if (this->current_step == 1)
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (this->world_Y  == iter->second->world_Y && this->world_X - 1 == iter->second->world_X)
+				return false;
+		}
+
 	//边界检测
 	if (this->world_X - 1 < 0 || WALL[this->world_Y][this->world_X - 1] == -1)
 	{
@@ -194,6 +218,14 @@ bool Player::Move_Right(bool force_push)
 	//如果步数用完，则不能再走
 	if (this->current_step <= 0)
 		return false;
+
+	//如果只剩下1步，则不能越过其他玩家
+	if (this->current_step == 1)
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (this->world_Y == iter->second->world_Y && this->world_X + 1 == iter->second->world_X)
+				return false;
+		}
 
 	//边界检测
 	if (this->world_X + 1 > GAMEPANEL_WIDTH - 1 || WALL[this->world_Y][this->world_X + 1] == -1)

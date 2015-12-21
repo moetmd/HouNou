@@ -154,15 +154,27 @@ bool Monster::Move()
 	switch (this->face_to)
 	{
 	case UP:
+		startframe = 12;
+		endframe = startframe + 3;
+
 		return this->Move_Up();
 		break;
 	case DOWN:
+		startframe = 0;
+		endframe = startframe + 3;
+
 		return this->Move_Down();
 		break;
 	case LEFT:
+		startframe = 4;
+		endframe = startframe + 3;
+
 		return this->Move_Left();
 		break;
 	case RIGHT:
+		startframe = 8;
+		endframe = startframe + 3;
+
 		return this->Move_Right();
 		break;
 	}

@@ -92,6 +92,10 @@ public:
 	virtual bool Move_Left(bool);
 	virtual bool Move_Right(bool);
 
+	virtual bool Push_Up();
+	virtual bool Push_Down();
+	virtual bool Push_Left();
+	virtual bool Push_Right();
 };
 
 //AIÕÊº“¿‡

@@ -253,52 +253,147 @@ void Game_Update(HWND window)
 		
 		if (g_pDInput->IsKeyDown(DIK_UPARROW))
 		{
-			if (hp_iter->second->Move_Up(false))
-			{
-				if (!hp_iter->second->Is_InBlood())
+			//如果步数有剩余
+			if(hp_iter->second->current_step > 0)
+
+				//如果按下左shift则可以推动其他玩家
+				if (g_pDInput->IsKeyDown(DIK_LSHIFT))
 				{
-					hp_iter->second->current_step -= 1;
-					hp_iter->second->startframe = 12;
-					hp_iter->second->endframe = hp_iter->second->startframe + 3;
+					if (hp_iter->second->Push_Up())
+					{
+						hp_iter->second->Move_Up(false);
+
+						if (!hp_iter->second->Is_InBlood())
+						{
+							hp_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							hp_iter->second->startframe = 12;
+							hp_iter->second->endframe = hp_iter->second->startframe + 3;
+						}
+					}
 				}
-			}
+				else
+					if (hp_iter->second->Move_Up(false))
+					{
+						if (!hp_iter->second->Is_InBlood())
+						{
+							hp_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							hp_iter->second->startframe = 12;
+							hp_iter->second->endframe = hp_iter->second->startframe + 3;
+						}
+					}
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
 		{
-			if (hp_iter->second->Move_Down(false))
-			{
-				if (!hp_iter->second->Is_InBlood()) //如果不在血池里，则减少步数，在血池里不减少步数
+			//如果步数有剩余
+			if (hp_iter->second->current_step > 0)
+
+				if (g_pDInput->IsKeyDown(DIK_LSHIFT))
 				{
-					hp_iter->second->current_step -= 1;
-					hp_iter->second->startframe = 0;
-					hp_iter->second->endframe = hp_iter->second->startframe + 3;
+					if (hp_iter->second->Push_Down())
+					{
+						hp_iter->second->Move_Down(false);
+
+						if (!hp_iter->second->Is_InBlood())
+						{
+							hp_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							hp_iter->second->startframe = 0;
+							hp_iter->second->endframe = hp_iter->second->startframe + 3;
+						}
+					}
 				}
-			}
+				else
+					if (hp_iter->second->Move_Down(false))
+					{
+						if (!hp_iter->second->Is_InBlood()) //如果不在血池里，则减少步数，在血池里不减少步数
+						{
+							hp_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							hp_iter->second->startframe = 0;
+							hp_iter->second->endframe = hp_iter->second->startframe + 3;
+						}
+					}
 
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
 		{
-			if (hp_iter->second->Move_Left(false))
-			{
-				if (!hp_iter->second->Is_InBlood())
-					hp_iter->second->current_step -= 1;
+			//如果步数有剩余
+			if (hp_iter->second->current_step > 0)
 
-				
-			}
+				if (g_pDInput->IsKeyDown(DIK_LSHIFT))
+				{
+					if (hp_iter->second->Push_Left())
+					{
+						hp_iter->second->Move_Left(false);
+
+						if (!hp_iter->second->Is_InBlood())
+						{
+							hp_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							hp_iter->second->startframe = 4;
+							hp_iter->second->endframe = hp_iter->second->startframe + 3;
+						}
+					}
+				}
+				else
+					if (hp_iter->second->Move_Left(false))
+					{
+						if (!hp_iter->second->Is_InBlood())
+						{
+							hp_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							hp_iter->second->startframe = 4;
+							hp_iter->second->endframe = hp_iter->second->startframe + 3;
+						}
+
+
+					}
 
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
 		{
-			if (hp_iter->second->Move_Right(false))
-			{
-				if (!hp_iter->second->Is_InBlood())
-					hp_iter->second->current_step -= 1;
+			//如果步数有剩余
+			if (hp_iter->second->current_step > 0)
 
-				
-			}
+				if (g_pDInput->IsKeyDown(DIK_LSHIFT))
+				{
+					if (hp_iter->second->Push_Right())
+					{
+						hp_iter->second->Move_Right(false);
+
+						if (!hp_iter->second->Is_InBlood())
+						{
+							hp_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							hp_iter->second->startframe = 8;
+							hp_iter->second->endframe = hp_iter->second->startframe + 3;
+						}
+					}
+				}
+				else
+					if (hp_iter->second->Move_Right(false))
+					{
+						if (!hp_iter->second->Is_InBlood())
+						{
+							hp_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							hp_iter->second->startframe = 8;
+							hp_iter->second->endframe = hp_iter->second->startframe + 3;
+						}
+					}
 
 		}
 

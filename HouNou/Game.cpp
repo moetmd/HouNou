@@ -22,6 +22,7 @@ const int MAX_STONE_NUM = 11;
 
 //回合数
 int rounds;
+int current_rounds;
 
 //当前回合
 int current_turn;
@@ -30,6 +31,10 @@ int current_turn;
 bool	game_pause = true;         //游戏是否暂停
 bool	game_over = true;			//游戏是否结束
 
+//玩家逃脱数
+int h_escape_num = 0;
+//AI逃脱数
+int ai_escape_num = 0;
 
 LPD3DXSPRITE spriteobj = NULL;
 
@@ -60,6 +65,9 @@ map<int, Player*>::iterator ai_iter;
 
 //存储位置的，用于恢复位置
 
+
+//控制AI和怪物行动频率
+DWORD timer;
 
 //sound
 
@@ -160,12 +168,19 @@ bool Game_Init()
 	//创建玩家角色
 	player_1 = new Player(6);
 	player_1->Set_img(L"GameMedia\\027_00.png");
+	player_1->current_step -= 1;
+
 	player_2 = new Player(3);
 	player_2->Set_img(L"GameMedia\\027_00.png");
+	player_2->current_step -= 1;
+
 	player_3 = new Player(2);
 	player_3->Set_img(L"GameMedia\\027_00.png");
+	player_3->current_step -= 1;
+
 	player_4 = new Player(4);
 	player_4->Set_img(L"GameMedia\\027_00.png");
+	player_4->current_step -= 1;
 
 	//添加玩家角色到玩家list
 	Human_Players[1] = player_1;
@@ -180,12 +195,19 @@ bool Game_Init()
 	//创建AI
 	ai_player_1 = new AI_Player(6);
 	ai_player_1->Set_img(L"GameMedia\\010_00.png");
+	ai_player_1->current_step -= 1;
+
 	ai_player_2 = new AI_Player(3);
 	ai_player_2->Set_img(L"GameMedia\\010_00.png");
+	ai_player_2->current_step -= 1;
+
 	ai_player_3 = new AI_Player(2);
 	ai_player_3->Set_img(L"GameMedia\\010_00.png");
+	ai_player_3->current_step -= 1;
+
 	ai_player_4 = new AI_Player(4);
 	ai_player_4->Set_img(L"GameMedia\\010_00.png");
+	ai_player_4->current_step -= 1;
 
 	//添加AI到全局MAP
 	players[5] = ai_player_1;
@@ -226,7 +248,9 @@ bool Game_Init()
 	hp_iter = Human_Players.begin();
 	ai_iter = AI_Players.begin();
 
+	current_rounds = 1;
 
+	timer = timeGetTime();
 
 	return true;
 }
@@ -243,8 +267,94 @@ void Game_Update(HWND window)
 	//update input devices
 	g_pDInput->GetInput();
 	
-	int current_rounds = rounds;
 
+	/*结算开始*/
+	//删除出界的石头
+	for (map<int, Sprite*>::iterator iter = stones.begin(); iter != stones.end();)
+	{
+		if (iter->second->out_of_map || WALL[iter->second->world_Y][iter->second->world_X] == 1)
+			stones.erase(iter++);
+		else
+			++iter;
+	}
+
+	//从全局玩家map中删除已死亡的角色
+	for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end();)
+	{
+		if (iter->second->killed)
+			players.erase(iter++);
+		else
+			++iter;
+	}
+
+	//从人类玩家map中删除已死亡角色
+	for (map<int, Player*>::iterator iter = Human_Players.begin(); iter != Human_Players.end();)
+	{
+		if (iter->second->killed)
+			Human_Players.erase(iter++);
+		else
+			++iter;
+	}
+
+	//从AI玩家map中删除已死亡角色
+	for (map<int, Player*>::iterator iter = AI_Players.begin(); iter != AI_Players.end();)
+	{
+		if (iter->second->killed)
+			AI_Players.erase(iter++);
+		else
+			++iter;
+	}
+
+	//如果人类玩家数为0，则游戏结束
+	if (Human_Players.empty() || Human_Players.size() == 0)
+	{
+		game_over = true;
+		g_currentGUI = GUI_START_SCREEN;
+		g_sound_bgm.Stop();
+	}
+
+	if (h_escape_num >= 3)
+	{
+		game_over = true;
+		g_currentGUI = GUI_START_SCREEN;
+		g_sound_bgm.Stop();
+	}
+
+	//如果是第二局，则添加剩余的角色
+	if (rounds == 2)
+	{
+		players[3] = player_3;
+		players[4] = player_4;
+
+		players[7] = ai_player_3;
+		players[8] = ai_player_4;
+
+		Human_Players[3] = player_3;
+		Human_Players[4] = player_4;
+
+		AI_Players[3] = ai_player_3;
+		AI_Players[4] = ai_player_4;
+
+	}
+
+
+	//重新指向起点，准备下一次游戏循环
+	if (current_rounds != rounds)
+	{
+		//根据回合数确定角色的移动步数
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			rounds % 2 == 0 ?
+				((Player*)(iter->second))->current_step = ((Player*)(iter->second))->night_step :
+				((Player*)(iter->second))->current_step = ((Player*)(iter->second))->day_step;
+		}
+
+		hp_iter = Human_Players.begin();
+		ai_iter = AI_Players.begin();
+	}
+
+	current_rounds = rounds;
+	/*结算完毕*/
 	
 
 	//玩家的行为
@@ -254,7 +364,15 @@ void Game_Update(HWND window)
 		if (g_pDInput->IsKeyDown(DIK_UPARROW))
 		{
 			//如果步数有剩余
-			if(hp_iter->second->current_step > 0)
+			if (hp_iter->second->current_step > 0)
+			{
+				//如果是在左上角，则玩家逃脱数加1，该角色被判死亡
+				if (hp_iter->second->world_X == 0 && hp_iter->second->world_Y == 0)
+				{
+					h_escape_num += 1;
+					hp_iter->second->killed = true;
+					hp_iter->second->visibal = false;
+				}
 
 				//如果按下左shift则可以推动其他玩家
 				if (g_pDInput->IsKeyDown(DIK_LSHIFT))
@@ -285,6 +403,7 @@ void Game_Update(HWND window)
 							hp_iter->second->endframe = hp_iter->second->startframe + 3;
 						}
 					}
+			}
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
@@ -327,6 +446,14 @@ void Game_Update(HWND window)
 		{
 			//如果步数有剩余
 			if (hp_iter->second->current_step > 0)
+			{
+				//如果是在左上角，则玩家逃脱数加1，该角色被判死亡
+				if (hp_iter->second->world_X == 0 && hp_iter->second->world_Y == 0)
+				{
+					h_escape_num += 1;
+					hp_iter->second->killed = true;
+					hp_iter->second->visibal = false; 
+				}
 
 				if (g_pDInput->IsKeyDown(DIK_LSHIFT))
 				{
@@ -358,7 +485,7 @@ void Game_Update(HWND window)
 
 
 					}
-
+			}
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
@@ -461,119 +588,45 @@ void Game_Update(HWND window)
 	//怪物的行为
 	if (current_turn == MONSTER_TURN)
 	{
-		
+		//限制怪物移动频率为1秒一次
+		if(timeGetTime() - timer > 1000)
+			switch (monster->step)
+			{
+				//如果抽到杀人卡
+			case 1:
+			case 2:
+				monster->face_to = monster->Look_Around();
+				if (monster->Move())
+				{
+					monster->current_step++;
+				}
+				if (monster->kill >= monster->step || monster->current_step >= 20)
+				{
+					monster->kill = 0;
+					rounds += 1;
+					current_turn = PLAYER_TURN;
+				}
+				timer = timeGetTime();
+				break;
+
+			default:
+				monster->face_to = monster->Look_Around();
+				if (monster->Move())
+				{
+					monster->current_step++;
+				}
+				if (monster->current_step >= monster->step)
+				{
+					monster->kill = 0;
+					rounds += 1;
+					current_turn = PLAYER_TURN;
+				}
+				timer = timeGetTime();
+				break;
+			}
+	}
+
 	
-		switch (monster->step)
-		{
-		//如果抽到杀人卡
-		case 1:
-		case 2:
-			monster->face_to = monster->Look_Around();
-			if (monster->Move())
-			{
-				monster->current_step++;
-			}
-			if (monster->kill >= monster->step || monster->current_step >= 20)
-			{
-				monster->kill = 0;
-				rounds += 1;
-				current_turn = PLAYER_TURN;
-			}
-			break;
-
-		default:
-			monster->face_to = monster->Look_Around();
-			if (monster->Move())
-			{
-				monster->current_step++;
-			}
-			if (monster->current_step >= monster->step)
-			{
-				monster->kill = 0;
-				rounds += 1;
-				current_turn = PLAYER_TURN;
-			}
-			break;
-		}
-	}
-
-	
-	//删除出界的石头
-	for (map<int, Sprite*>::iterator iter = stones.begin(); iter != stones.end();)
-	{
-		if (iter->second->out_of_map || WALL[iter->second->world_Y][iter->second->world_X] == 1)
-			stones.erase(iter++);
-		else
-			++iter;
-	}
-
-	//从全局玩家map中删除已死亡的角色
-	for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end();)
-	{
-		if (iter->second->killed)
-			players.erase(iter++);
-		else
-			++iter;
-	}
-
-	//从人类玩家map中删除已死亡角色
-	for (map<int, Player*>::iterator iter = Human_Players.begin(); iter != Human_Players.end();)
-	{
-		if (iter->second->killed)
-			Human_Players.erase(iter++);
-		else
-			++iter;
-	}
-
-	//从AI玩家map中删除已死亡角色
-	for (map<int, Player*>::iterator iter = AI_Players.begin(); iter != AI_Players.end();)
-	{
-		if (iter->second->killed)
-			AI_Players.erase(iter++);
-		else
-			++iter;
-	}
-
-	//如果人类玩家数为0，则游戏结束
-	if (Human_Players.empty() || Human_Players.size() == 0)
-	{
-		game_over = true;
-		g_currentGUI = GUI_START_SCREEN;
-		g_sound_bgm.Stop();
-	}
-
-	//如果是第二局，则添加剩余的角色
-	if (rounds == 2)
-	{
-		players[3] = player_3;
-		players[4] = player_4;
-
-		players[7] = ai_player_3;
-		players[8] = ai_player_4;
-
-		Human_Players[3] = player_3;
-		Human_Players[4] = player_4;
-
-		AI_Players[3] = ai_player_3;
-		AI_Players[4] = ai_player_4;
-
-	}
-
-
-	//重新指向起点，准备下一次游戏循环
-	if (current_rounds != rounds)
-	{
-		//根据回合数确定角色的移动步数
-		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
-		{
-			rounds % 2 == 0 ?
-				((Player*)(iter->second))->current_step = ((Player*)(iter->second))->night_step :
-				((Player*)(iter->second))->current_step = ((Player*)(iter->second))->day_step;
-		}
-
-		hp_iter = Human_Players.begin();
-		ai_iter = AI_Players.begin();
-	}
 	
 }
 

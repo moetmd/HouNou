@@ -157,7 +157,7 @@
     <ClInclude Include="TileUtil.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AI_Player.cpp" />
+    <ClCompile Include="AI_PlayerClass.cpp" />
     <ClCompile Include="CDirectMusic.cpp" />
     <ClCompile Include="D3DGUIClass.cpp" />
     <ClCompile Include="DirectInputClass.cpp" />
@@ -165,7 +165,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Game_GUI.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="MonsterClass.cpp" />
     <ClCompile Include="PlayerClass.cpp" />
     <ClCompile Include="SpriteClass.cpp" />
     <ClCompile Include="StoneClass.cpp" />

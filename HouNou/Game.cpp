@@ -52,6 +52,8 @@ AI_Player* ai_player_2;
 AI_Player* ai_player_3;
 AI_Player* ai_player_4;
 
+Sprite* cursor; //指向当前角色的指针
+
 //全局维护的所有player容器，包括玩家和AI
 map<int, Sprite*> players;
 
@@ -219,7 +221,14 @@ bool Game_Init()
 	AI_Players[2] = ai_player_2;
 	
 
-	
+	//创建指针
+	cursor = new Sprite();
+	cursor->world_X = player_1->world_X;
+	cursor->world_Y = player_1->world_Y - 1;
+	cursor->Set_img(L"GameMedia\\cursor.tga");
+	cursor->endframe = 1;
+	cursor->columns = 2;
+	cursor->width = cursor->height = 17;
 
 	//创建怪物
 	monster = new Monster();
@@ -251,6 +260,7 @@ bool Game_Init()
 	current_rounds = 1;
 
 	timer = timeGetTime();
+	srand(timeGetTime());
 
 	return true;
 }
@@ -313,6 +323,7 @@ void Game_Update(HWND window)
 		g_sound_bgm.Stop();
 	}
 
+	//如果玩家逃脱数为3个或以上，则游戏结束
 	if (h_escape_num >= 3)
 	{
 		game_over = true;
@@ -352,6 +363,8 @@ void Game_Update(HWND window)
 		hp_iter = Human_Players.begin();
 		ai_iter = AI_Players.begin();
 	}
+
+	
 
 	current_rounds = rounds;
 	/*结算完毕*/
@@ -486,6 +499,7 @@ void Game_Update(HWND window)
 
 					}
 			}
+
 		}
 
 		if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
@@ -524,8 +538,8 @@ void Game_Update(HWND window)
 
 		}
 
-		//确认当前角色位置，并继续
-		if (g_pDInput->IsKeyDown(DIK_SPACE))
+		//确认当前角色位置，并继续   或者 已经逃出（被判为死亡）
+		if (g_pDInput->IsKeyDown(DIK_SPACE) || hp_iter->second->killed)
 		{
 			if(!hp_iter->second->Is_OverPlayer() && !hp_iter->second->Is_InBlood())//如果当前角色没有和其他角色重叠并且不在血池中，则继续
 				if (hp_iter == --Human_Players.end())
@@ -536,7 +550,7 @@ void Game_Update(HWND window)
 				else
 				{
 					++hp_iter;
-
+					
 				}
 		}
 
@@ -545,6 +559,11 @@ void Game_Update(HWND window)
 		{
 			
 		}
+
+		//让指针指向当前角色
+		cursor->world_X = hp_iter->second->world_X;
+		cursor->world_Y = hp_iter->second->world_Y - 1;
+
 	}
 
 	//escape key exits
@@ -558,25 +577,96 @@ void Game_Update(HWND window)
 	//AI的行为
 	if (current_turn == AI_TURN)
 	{
-		//如果AI都死了直接进入怪物的回合
+
+		//判断AI是否死光了
 		if (!AI_Players.empty() && AI_Players.size() != 0)
 		{
-			ai_iter->second->Move_Up(false);
-			ai_iter->second->current_step -= 1;
+			//限制AI的移动频率为一秒一步
+			if (timeGetTime() - timer > 1000)
 
-			if (ai_iter == --AI_Players.end())
-			{
-				current_turn = MONSTER_TURN;
-				//先获取行动步数
-				monster->current_step = 0;
-				monster->Get_CurrentStep();
-			}
-			else
-			{
-				++ai_iter;
-			}
+			//如果步数大于0，继续走
+			if (ai_iter->second->current_step > 0)
+				switch (rand() % 4)
+				{
+				case 0:
+					if (ai_iter->second->Move_Up(false))
+					{
+						if (!ai_iter->second->Is_InBlood())
+						{
+							ai_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							ai_iter->second->startframe = 12;
+							ai_iter->second->endframe = ai_iter->second->startframe + 3;
+						}
+					}
+					timer = timeGetTime();
+					break;
+				case 1:
+					if (ai_iter->second->Move_Down(false))
+					{
+						if (!ai_iter->second->Is_InBlood())
+						{
+							ai_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							ai_iter->second->startframe = 0;
+							ai_iter->second->endframe = ai_iter->second->startframe + 3;
+						}
+					}
+					timer = timeGetTime();
+					break;
+				case 2:
+					if (ai_iter->second->Move_Left(false))
+					{
+						if (!ai_iter->second->Is_InBlood())
+						{
+							ai_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							ai_iter->second->startframe = 4;
+							ai_iter->second->endframe = ai_iter->second->startframe + 3;
+						}
+					}
+					timer = timeGetTime();
+					break;
+				case 3:
+					if (ai_iter->second->Move_Right(false))
+					{
+						if (!ai_iter->second->Is_InBlood())
+						{
+							ai_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							ai_iter->second->startframe = 8;
+							ai_iter->second->endframe = ai_iter->second->startframe + 3;
+						}
+					}
+					timer = timeGetTime();
+					break;
+
+				default:
+					break;
+				}
+			else //如果步数用尽
+				if (ai_iter == --AI_Players.end())
+				{
+					current_turn = MONSTER_TURN;
+					//先获取行动步数
+					monster->current_step = 0;
+					monster->Get_CurrentStep();
+				}
+				else
+				{
+					++ai_iter;
+					
+				}
+
+
+			cursor->world_X = ai_iter->second->world_X;
+			cursor->world_Y = ai_iter->second->world_Y - 1;
 		}
-		else
+		else	//如果AI都死了直接进入怪物的回合
 		{
 			current_turn = MONSTER_TURN;
 			//先获取行动步数
@@ -624,6 +714,9 @@ void Game_Update(HWND window)
 				timer = timeGetTime();
 				break;
 			}
+
+		cursor->world_X = monster->world_X;
+		cursor->world_Y = monster->world_Y - 1;
 	}
 
 	
@@ -639,7 +732,6 @@ void Game_Render(HWND hwnd)
 
 	spriteobj->Begin(D3DXSPRITE_ALPHABLEND);
 
-	
 	for (map<int, Sprite*>::iterator iter = stones.begin(); iter != stones.end(); iter++)
 	{
 		if (iter->second->visibal)
@@ -666,6 +758,8 @@ void Game_Render(HWND hwnd)
 		}
 	}
 
+	cursor->Draw();
+
 	spriteobj->End();
 
 
@@ -688,7 +782,21 @@ void Game_Clean()
 		SAFE_DELETE(iter->second);
 	}
 
+	SAFE_RELEASE(g_pFont);
+
 	SAFE_DELETE(monster);
+
+	SAFE_DELETE(cursor);
+
+	SAFE_DELETE(player_1);
+	SAFE_DELETE(player_2);
+	SAFE_DELETE(player_3);
+	SAFE_DELETE(player_4);
+
+	SAFE_DELETE(ai_player_1);
+	SAFE_DELETE(ai_player_2);
+	SAFE_DELETE(ai_player_3);
+	SAFE_DELETE(ai_player_4);
 
 	g_sound_bgm.Shutdown();
 

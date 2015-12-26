@@ -12,10 +12,37 @@
 #define  LEFT 3
 #define  RIGHT 4
 
+double GaussRand();
+
 using namespace std;
 
 const int SCREENW = WINDOW_WIDTH;
 const int SCREENH = WINDOW_HEIGHT;
+
+//settings for the scoller
+const int TILEWIDTH = 64;   //块长宽
+const int TILEHEIGHT = 64;
+
+const int MAPWIDTH = 20;    //游戏世界长宽
+const int MAPHEIGHT = 13;
+
+const int GAMEPANEL_WIDTH = 16;  //游戏区域长宽
+const int GAMEPANEL_HEIGHT = 11;
+
+//scrolling window size 
+const int WINDOWWIDTH = (SCREENW / TILEWIDTH) * TILEWIDTH;
+const int WINDOWHEIGHT = (SCREENH / TILEHEIGHT) * TILEHEIGHT;
+
+//entire game world dimensions
+const int GAMEWORLDWIDTH = TILEWIDTH * MAPWIDTH;
+const int GAMEWORLDHEIGHT = TILEHEIGHT * MAPHEIGHT;
+
+//gameworld position scrolling
+float ScrollX = 0;
+float ScrollY = 0;
+float SpeedX = 0;
+float SpeedY = 0;
+long start = 0;
 
 //最大石头数
 const int MAX_STONE_NUM = 11;
@@ -71,6 +98,9 @@ map<int, Player*>::iterator ai_iter;
 //控制AI和怪物行动频率
 DWORD timer;
 
+//AI超时设定
+DWORD ai_timeout;
+
 //sound
 
 CDirectMusic g_sound_bgm;
@@ -84,53 +114,38 @@ LPD3DXFONT g_pFont = NULL;
 //游戏世界表层
 LPDIRECT3DSURFACE9 gameworld = NULL;
 
-//settings for the scoller
-const int TILEWIDTH = 64;   //块长宽
-const int TILEHEIGHT = 64;
-const int MAPWIDTH = 18;    //游戏世界长宽
-const int MAPHEIGHT = 15;
-
-const int GAMEPANEL_WIDTH = 16;  //游戏区域长宽
-const int GAMEPANEL_HEIGHT = 11;
-
-//scrolling window size 
-const int WINDOWWIDTH = (SCREENW / TILEWIDTH) * TILEWIDTH;
-const int WINDOWHEIGHT = (SCREENH / TILEHEIGHT) * TILEHEIGHT;
-
-//entire game world dimensions
-const int GAMEWORLDWIDTH = TILEWIDTH * MAPWIDTH;
-const int GAMEWORLDHEIGHT = TILEHEIGHT * MAPHEIGHT;
-
-//gameworld position scrolling
-float ScrollX = 0;
-float ScrollY = 0;
-float SpeedX = 0;
-float SpeedY = 0;
-long start = 0;
-
-
 
 //position caculation
 
 
 
-
 int MAPDATA[MAPWIDTH*MAPHEIGHT] = {
-	41, 6, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41,
-	41, 41,41, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 50, 2, 41, 2, 79,
-	80, 41,41, 50, 14, 15, 15, 15, 16, 2, 2, 2, 2, 2, 2, 2, 41, 89,
-	90, 41,41, 2, 24, 25, 35, 25, 26, 2, 2, 44, 49, 2, 2, 2, 2, 41,
-	2, 41,41, 2, 24, 26, 2, 24, 26, 2, 2, 64, 69, 2, 2, 2, 2, 2,
-	41, 41,41, 2, 24, 25, 15, 25, 26, 2, 2, 50, 2, 2, 2, 2, 2, 2,
-	2, 41,41, 2, 34, 35, 35, 35, 36, 2, 2, 2, 2, 11, 12, 13, 2, 2,
-	2, 41,41, 2, 50, 2, 2, 2, 2, 2, 2, 2, 2, 21, 3, 23, 2, 2,
-	2, 41,41, 41, 2, 2, 2, 2, 2, 2, 50, 2, 2, 31, 32, 33, 2, 2,
-	2, 41,41, 2, 41, 2, 2, 55, 55, 55, 55, 2, 2, 2, 2, 2, 50, 2,
-	2, 41,41, 79, 80, 41, 2, 2, 2, 2, 2, 2, 2, 14, 15, 15, 15, 16,
-	2, 41,41, 89, 90, 2, 41, 2, 2, 2, 2, 2, 50, 34, 35, 35, 35, 36,
-	2, 41,41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41, 41,
-	41, 41,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-	0, 0,0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,0, 0
+	1, 2, 3, 4, 4, 4, 5, 6, 4, 4, 4, 4, 4, 4, 4, 4,
+	4, 7, 8, 9,
+	10, 11, 11, 11, 12, 13, 14, 11, 11, 11, 11, 11, 11, 15, 16, 17,
+	18, 19, 20, 21,
+	22, 11, 11, 11, 23, 24, 25, 11, 26, 27, 27, 28, 29, 11, 30, 31,
+	32, 19, 11, 33,
+	34, 11, 11, 11, 35, 36, 37, 11, 38, 39, 40, 41, 42, 11, 11, 43,
+	44, 19, 11, 45,
+	34, 11, 11, 11, 11, 11, 11, 11, 38, 46, 47, 48, 11, 11, 11, 11,
+	49, 19, 11, 11,
+	34, 11, 11, 11, 11, 11, 11, 11, 50, 51, 51, 52, 11, 11, 11, 11,
+	11, 19, 11, 11,
+	34, 11, 53, 54, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+	11, 19, 11, 11,
+	34, 11, 55, 56, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11,
+	11, 19, 11, 11,
+	57, 58, 11, 11, 26, 27, 27, 27, 27, 59, 11, 11, 11, 11, 11, 11,
+	11, 19, 60, 61,
+	62, 63, 64, 11, 38, 65, 66, 66, 67, 48, 11, 11, 11, 11, 11, 11,
+	11, 19, 68, 69,
+	70, 71, 72, 73, 50, 51, 51, 51, 51, 52, 11, 11, 11, 11, 11, 74,
+	75, 76, 77, 78,
+	79, 80, 81, 82, 83, 11, 11, 11, 11, 11, 11, 11, 11, 11, 11, 84,
+	85, 86, 87, 88,
+	89, 90, 91, 92, 93, 94, 95, 95, 95, 95, 95, 95, 95, 95, 95, 96,
+	97, 98, 99, 100
 };
 
 //保存墙和血池、以及石头的初始位置
@@ -545,7 +560,7 @@ void Game_Update(HWND window)
 				if (hp_iter == --Human_Players.end())
 				{
 					current_turn = AI_TURN;
-					
+					ai_timeout = timeGetTime(); //ai超时初始化
 				}
 				else
 				{
@@ -584,25 +599,11 @@ void Game_Update(HWND window)
 			//限制AI的移动频率为一秒一步
 			if (timeGetTime() - timer > 1000)
 
-			//如果步数大于0，继续走
-			if (ai_iter->second->current_step > 0)
-				switch (rand() % 4)
+			//如果步数大于0，继续走  如果超时 12s，则直接跳过
+			if (ai_iter->second->current_step > 0 && timeGetTime() - ai_timeout < 12000 )
+				switch ( (int)GaussRand() % 4)
 				{
 				case 0:
-					if (ai_iter->second->Move_Up(false))
-					{
-						if (!ai_iter->second->Is_InBlood())
-						{
-							ai_iter->second->current_step -= 1;
-
-							//改变角色的动画起始和结束帧
-							ai_iter->second->startframe = 12;
-							ai_iter->second->endframe = ai_iter->second->startframe + 3;
-						}
-					}
-					timer = timeGetTime();
-					break;
-				case 1:
 					if (ai_iter->second->Move_Down(false))
 					{
 						if (!ai_iter->second->Is_InBlood())
@@ -611,6 +612,20 @@ void Game_Update(HWND window)
 
 							//改变角色的动画起始和结束帧
 							ai_iter->second->startframe = 0;
+							ai_iter->second->endframe = ai_iter->second->startframe + 3;
+						}
+					}
+					timer = timeGetTime();
+					break;
+				case 1:
+					if (ai_iter->second->Move_Up(false))
+					{
+						if (!ai_iter->second->Is_InBlood())
+						{
+							ai_iter->second->current_step -= 1;
+
+							//改变角色的动画起始和结束帧
+							ai_iter->second->startframe = 12;
 							ai_iter->second->endframe = ai_iter->second->startframe + 3;
 						}
 					}
@@ -659,7 +674,7 @@ void Game_Update(HWND window)
 				else
 				{
 					++ai_iter;
-					
+					ai_timeout = timeGetTime();
 				}
 
 
@@ -839,5 +854,34 @@ void Stones_Init()
 
 }
 
+//高斯分布随机数
+double GaussRand()
+{
+	static double v1, v2, s;
+	static int phase = 0;
+	double x;
+	double V = 0.4; //方差
+	double E = 2; //期望值
 
+	if (0 == phase)
+	{
+		do
+		{
+			double u1 = (double)rand() / RAND_MAX;
+			double u2 = (double)rand() / RAND_MAX;
+
+			v1 = 2 * u1 - 1;
+			v2 = 2 * u2 - 1;
+			s = v1 * v1 + v2 * v2;
+		} while (1 <= s || 0 == s);
+		x = v1 * sqrt(-2 * log(s) / s);
+	}
+	else
+	{
+		x = v2 * sqrt(-2 * log(s) / s);
+	}
+	phase = 1 - phase;
+
+	return x * V + E;
+}
 

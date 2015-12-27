@@ -7,10 +7,13 @@ D3DGUIClass		*g_StartGUI = NULL; //游戏开始窗口
 D3DGUIClass		*g_LoadGUI = NULL; //游戏载入窗口
 D3DGUIClass		*g_OptionGUI = NULL; //游戏设置窗口
 
+
 int						g_MainGUIFontID = -1;						//  GUI中字体对象的ID
 int						g_StartGUIFontID = -1;						//  GUI中字体对象的ID
 int						g_LoadGUIFontID = -1;						//  GUI中字体对象的ID
 int						g_OptionGUIFontID = -1;						//  GUI中字体对象的ID
+
+
 int						g_currentGUI = GUI_MAIN_SCREEN;				//一个当前的GUI标识
 
 
@@ -26,14 +29,18 @@ bool GUI_Init()
 	g_LoadGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //载入游戏页面
 	g_OptionGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //设置页面
 
-																			  // 给四个页面分别添加背景图
+
+
+
+																			  // 给页面分别添加背景图
 	if (!g_MainGUI->AddBackground(L"GameMedia/Menu/maingui.jpg")) return false;
 	if (!g_StartGUI->AddBackground(L"GameMedia/Menu/startgui.jpg")) return false;
 	if (!g_LoadGUI->AddBackground(L"GameMedia/Menu/loadgui.jpg")) return false;
 	if (!g_OptionGUI->AddBackground(L"GameMedia/Menu/optiongui.jpg")) return false;
 
 
-	// 分别给四个页面添加字体
+
+	// 分别给页面添加字体
 	if (!g_MainGUI->CreateTextFont(L"微软雅黑", 28, &g_MainGUIFontID)) return false;
 	if (!g_StartGUI->CreateTextFont(L"微软雅黑", 38, &g_StartGUIFontID)) return false;
 	if (!g_LoadGUI->CreateTextFont(L"微软雅黑", 38, &g_LoadGUIFontID)) return false;
@@ -51,7 +58,7 @@ bool GUI_Init()
 		500, 150, D3DCOLOR_XRGB(255, 255, 255), g_MainGUIFontID)) return false;
 
 
-	// 添加4个按钮，分别是开始游戏，载入进度，选项和退出游戏，每个按钮对应3幅图
+	// 添加按钮，分别是开始游戏，载入进度，选项和退出游戏，每个按钮对应3幅图
 	if (!g_MainGUI->AddButton(BUTTON_START_ID, 650, 340, L"GameMedia\\Menu\\startUp.png",
 		L"GameMedia\\Menu\\StartOver.png", L"GameMedia\\Menu\\startDown.png")) return false;
 
@@ -61,7 +68,8 @@ bool GUI_Init()
 	if (!g_MainGUI->AddButton(BUTTON_OPTION_ID, 650, 430, L"GameMedia\\Menu\\optionsUp.png",
 		L"GameMedia\\Menu\\optionsOver.png", L"GameMedia\\Menu\\optionsDown.png")) return false;
 
-	if (!g_MainGUI->AddButton(BUTTON_QUIT_ID, 650, 475, L"GameMedia\\Menu\\quitUp.png",
+
+	if (!g_MainGUI->AddButton(BUTTON_QUIT_ID, 650, 510, L"GameMedia\\Menu\\quitUp.png",
 		L"GameMedia\\Menu\\quitOver.png", L"GameMedia\\Menu\\quitDown.png")) return false;
 
 
@@ -90,6 +98,7 @@ bool GUI_Init()
 	//添加静态文本到页面中
 	if (!g_OptionGUI->AddStaticText(STATIC_TEXT_ID, L"这里是Option页面",
 		540, 60, D3DCOLOR_XRGB(33, 55, 255), g_OptionGUIFontID)) return false;
+
 }
 
 
@@ -120,6 +129,7 @@ void GUICallback(int id, int state)
 			g_currentGUI = GUI_MAIN_SCREEN;
 		break;
 
+
 	case BUTTON_QUIT_ID://quit退出按钮
 		if (state == UGP_BUTTON_DOWN)
 			PostQuitMessage(0);
@@ -144,4 +154,5 @@ void GUI_CleanUp()
 	SAFE_DELETE(g_StartGUI);
 	SAFE_DELETE(g_LoadGUI);
 	SAFE_DELETE(g_OptionGUI);
+
 }

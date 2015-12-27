@@ -26,12 +26,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine,
 	wndClass.hCursor = LoadCursor( NULL, IDC_ARROW );    //指定窗口类的光标句柄。
 	wndClass.hbrBackground=(HBRUSH)GetStockObject(GRAY_BRUSH);  //为hbrBackground成员指定一个灰色画刷句柄
 	wndClass.lpszMenuName = NULL;						//用一个以空终止的字符串，指定菜单资源的名字。
-	wndClass.lpszClassName = _T("HouNou");		//用一个以空终止的字符串，指定窗口类的名字。
+	wndClass.lpszClassName = _T("幻想乡冒险");		//用一个以空终止的字符串，指定窗口类的名字。
 
 	if( !RegisterClassEx( &wndClass ) )				//设计完窗口后，需要对窗口类进行注册，这样才能创建该类型的窗口
 		return -1;		
 
-	HWND hwnd = CreateWindow( _T("HouNou"),WINDOW_TITLE,			//喜闻乐见的创建窗口函数CreateWindow
+	HWND hwnd = CreateWindow( _T("幻想乡冒险"),WINDOW_TITLE,			//喜闻乐见的创建窗口函数CreateWindow
 		WS_POPUP, CW_USEDEFAULT, CW_USEDEFAULT, WINDOW_WIDTH,
 		WINDOW_HEIGHT, NULL, NULL, hInstance, NULL );
 
@@ -79,7 +79,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPSTR lpCmdLine,
 		}
 	}
 
-	UnregisterClass(_T("HouNou"), wndClass.hInstance);
+	UnregisterClass(_T("幻想乡冒险"), wndClass.hInstance);
 	return 0;  
 }
 

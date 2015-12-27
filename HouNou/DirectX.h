@@ -16,7 +16,7 @@ using namespace std;
 #define WINDOW_HEIGHT	832						//为窗口高度定义的宏，以方便在此处修改窗口高度
 #endif
 
-#define WINDOW_TITLE _T("奉纳") //为窗口标题定义的宏
+#define WINDOW_TITLE _T("幻想乡冒险") //为窗口标题定义的宏
 
 
 

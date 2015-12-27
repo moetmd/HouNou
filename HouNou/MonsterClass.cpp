@@ -327,13 +327,24 @@ bool Monster::Move_Up()
 	{
 		this->world_X = GAMEPANEL_WIDTH - 1 - this->world_X;
 		this->world_Y = GAMEPANEL_HEIGHT - 1 - this->world_Y;
+
+		//出墙之后如果是玩家则该玩家被判定为死亡
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (this->world_Y == iter->second->world_Y &&
+				this->world_X == iter->second->world_X)
+			{
+				iter->second->killed = true;
+				this->kill += 1;
+			}
+		}
+
 		return true;
 	}
 
 
 	//如果前面是玩家，则玩家被判定为死
-	map<int, Sprite*>::iterator iter;
-	for (iter = players.begin(); iter != players.end(); ++iter)
+	for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
 	{
 		if (this->world_Y - 1 == iter->second->world_Y && 
 			this->world_X == iter->second->world_X)
@@ -346,7 +357,7 @@ bool Monster::Move_Up()
 	}
 
 	//推石头 和 石头后面的玩家
-	for (iter = stones.begin(); iter != stones.end(); ++iter)
+	for (map<int, Sprite*>::iterator iter = stones.begin(); iter != stones.end(); ++iter)
 	{
 		if (this->world_Y - 1 == iter->second->world_Y &&
 			this->world_X == iter->second->world_X)
@@ -377,7 +388,7 @@ bool Monster::Move_Up()
 	if (flag)//如果下一个是血池的话
 	{
 		//判断血池外是否是石头
-		for (iter = stones.begin(); iter != stones.end(); ++iter)
+		for (map<int, Sprite*>::iterator iter = stones.begin(); iter != stones.end(); ++iter)
 		{
 			if (
 				x == iter->second->world_X
@@ -392,7 +403,7 @@ bool Monster::Move_Up()
 		}
 
 		//判断血池外是否是玩家
-		for (iter = players.begin(); iter != players.end(); ++iter)
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
 		{
 			if (
 				x == iter->second->world_X
@@ -421,6 +432,18 @@ bool Monster::Move_Down()
 	{
 		this->world_X = GAMEPANEL_WIDTH - 1 - this->world_X;
 		this->world_Y = GAMEPANEL_HEIGHT - 1 - this->world_Y;
+
+		//出墙之后如果是玩家则该玩家被判定为死亡
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (this->world_Y == iter->second->world_Y &&
+				this->world_X == iter->second->world_X)
+			{
+				iter->second->killed = true;
+				this->kill += 1;
+			}
+		}
+
 		return true;
 	}
 
@@ -516,6 +539,18 @@ bool Monster::Move_Left()
 	{
 		this->world_X = GAMEPANEL_WIDTH - 1 - this->world_X;
 		this->world_Y = GAMEPANEL_HEIGHT - 1 - this->world_Y;
+
+		//出墙之后如果是玩家则该玩家被判定为死亡
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (this->world_Y == iter->second->world_Y &&
+				this->world_X == iter->second->world_X)
+			{
+				iter->second->killed = true;
+				this->kill += 1;
+			}
+		}
+
 		return true;
 	}
 
@@ -611,6 +646,18 @@ bool Monster::Move_Right()
 	{
 		this->world_X = GAMEPANEL_WIDTH - 1 - this->world_X;
 		this->world_Y = GAMEPANEL_HEIGHT - 1 - this->world_Y;
+
+		//出墙之后如果是玩家则该玩家被判定为死亡
+		for (map<int, Sprite*>::iterator iter = players.begin(); iter != players.end(); ++iter)
+		{
+			if (this->world_Y == iter->second->world_Y &&
+				this->world_X == iter->second->world_X)
+			{
+				iter->second->killed = true;
+				this->kill += 1;
+			}
+		}
+
 		return true;
 	}
 

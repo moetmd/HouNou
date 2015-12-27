@@ -22,7 +22,9 @@
 #define GUI_START_SCREEN      2
 #define GUI_LOAD_SCREEN		  3
 #define GUI_OPTION_SCREEN     4
+
 #define GAME_RUN			  5
+
 
 // 设置一些GUI中用到的控件ID
 #define STATIC_TEXT_ID     1
@@ -32,6 +34,8 @@
 #define BUTTON_QUIT_ID     5
 #define BUTTON_BACK_ID     6
 #define BUTTON_LEVEL_1_ID  7
+
+
 
 
 

@@ -161,24 +161,47 @@ void Direct3D_Render(HWND hwnd, FLOAT fTimeDelta)
 	//--------------------------------------------------------------------------------------
 
 
-	// 一个if 、else if、else组合句，处理和渲染GUI系统
-	if (g_currentGUI == GUI_MAIN_SCREEN)
+	//处理和渲染GUI系统
+
+
+	switch (g_currentGUI)
+	{
+	case GUI_MAIN_SCREEN:
 		ProcessGUI(g_MainGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
-	else if (g_currentGUI == GUI_START_SCREEN)
+		break;
+	case GUI_START_SCREEN:
 		ProcessGUI(g_StartGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
-	else if (g_currentGUI == GUI_LOAD_SCREEN)
+		break;
+	case GUI_LOAD_SCREEN:
 		ProcessGUI(g_LoadGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
-	else if (g_currentGUI == GUI_OPTION_SCREEN)
+		break;
+	case GUI_OPTION_SCREEN:
 		ProcessGUI(g_OptionGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
-	else if (g_currentGUI == GAME_RUN)
+		break;
+	case GUI_HELP_SCREEN:
+		ProcessGUI(g_HelpGUI, g_LMBDown, g_MouseX,
+			g_MouseY, GUICallback);
+		break;
+	case GAME_WIN:
+		ProcessGUI(g_WinGUI, g_LMBDown, g_MouseX,
+			g_MouseY, GUICallback);
+		break;
+	case GAME_LOSE:
+		ProcessGUI(g_LoseGUI, g_LMBDown, g_MouseX,
+			g_MouseY, GUICallback);
+		break;
+	case GAME_RUN:
 		Game_Render(hwnd);
-	else
+		break;
+	default:
 		ProcessGUI(g_MainGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
+		break;
+	}
 
 	//-----------------------------【绘制文字信息】-----------------------------
 	HelpText_Render(hwnd);

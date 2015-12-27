@@ -7,16 +7,24 @@ D3DGUIClass		*g_StartGUI = NULL; //游戏开始窗口
 D3DGUIClass		*g_LoadGUI = NULL; //游戏载入窗口
 D3DGUIClass		*g_OptionGUI = NULL; //游戏设置窗口
 
+D3DGUIClass		*g_WinGUI = NULL; //胜利界面
+D3DGUIClass		*g_LoseGUI = NULL; //失败界面
+D3DGUIClass		*g_HelpGUI = NULL; //帮助界面
 
 int						g_MainGUIFontID = -1;						//  GUI中字体对象的ID
 int						g_StartGUIFontID = -1;						//  GUI中字体对象的ID
 int						g_LoadGUIFontID = -1;						//  GUI中字体对象的ID
 int						g_OptionGUIFontID = -1;						//  GUI中字体对象的ID
 
+int						g_WinGUIFontID = -1;
+int						g_LoseGUIFontID = -1;
+int						g_HelpGUIFontID = -1;
 
 int						g_currentGUI = GUI_MAIN_SCREEN;				//一个当前的GUI标识
 
-
+bool					gui_input_lock = false;
+int tmp_gui = GUI_MAIN_SCREEN;
+DWORD lock_timeout;
 
 //GUI所需资源初始化
 bool GUI_Init()
@@ -29,6 +37,9 @@ bool GUI_Init()
 	g_LoadGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //载入游戏页面
 	g_OptionGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //设置页面
 
+	g_WinGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //胜利页面
+	g_LoseGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //失败页面
+	g_HelpGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //帮助页面
 
 
 
@@ -38,6 +49,9 @@ bool GUI_Init()
 	if (!g_LoadGUI->AddBackground(L"GameMedia/Menu/loadgui.jpg")) return false;
 	if (!g_OptionGUI->AddBackground(L"GameMedia/Menu/optiongui.jpg")) return false;
 
+	if (!g_WinGUI->AddBackground(L"GameMedia/Menu/wingui.jpg")) return false;
+	if (!g_LoseGUI->AddBackground(L"GameMedia/Menu/losegui.jpg")) return false;
+	if (!g_HelpGUI->AddBackground(L"GameMedia/Menu/helpgui.jpg")) return false;
 
 
 	// 分别给页面添加字体
@@ -45,6 +59,10 @@ bool GUI_Init()
 	if (!g_StartGUI->CreateTextFont(L"微软雅黑", 38, &g_StartGUIFontID)) return false;
 	if (!g_LoadGUI->CreateTextFont(L"微软雅黑", 38, &g_LoadGUIFontID)) return false;
 	if (!g_OptionGUI->CreateTextFont(L"微软雅黑", 38, &g_OptionGUIFontID)) return false;
+
+	if (!g_WinGUI->CreateTextFont(L"微软雅黑", 38, &g_WinGUIFontID)) return false;
+	if (!g_LoseGUI->CreateTextFont(L"微软雅黑", 38, &g_LoseGUIFontID)) return false;
+	if (!g_HelpGUI->CreateTextFont(L"微软雅黑", 38, &g_HelpGUIFontID)) return false;
 
 
 
@@ -54,31 +72,33 @@ bool GUI_Init()
 	if (!g_MainGUI->AddStaticText(STATIC_TEXT_ID, L"Version 0.1",
 		1170, 735, D3DCOLOR_XRGB(55, 155, 255), g_MainGUIFontID)) return false;
 
-	if (!g_MainGUI->AddStaticText(STATIC_TEXT_ID, L"呵呵",
+	if (!g_MainGUI->AddStaticText(STATIC_TEXT_ID, L"hehe",
 		500, 150, D3DCOLOR_XRGB(255, 255, 255), g_MainGUIFontID)) return false;
 
 
 	// 添加按钮，分别是开始游戏，载入进度，选项和退出游戏，每个按钮对应3幅图
-	if (!g_MainGUI->AddButton(BUTTON_START_ID, 650, 340, L"GameMedia\\Menu\\startUp.png",
+	if (!g_MainGUI->AddButton(BUTTON_START_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia\\Menu\\startUp.png",
 		L"GameMedia\\Menu\\StartOver.png", L"GameMedia\\Menu\\startDown.png")) return false;
 
-	if (!g_MainGUI->AddButton(BUTTON_LOAD_ID, 650, 385, L"GameMedia\\Menu\\loadUp.png",
+	if (!g_MainGUI->AddButton(BUTTON_LOAD_ID, WINDOW_WIDTH / 2 - 50, 595, L"GameMedia\\Menu\\loadUp.png",
 		L"GameMedia\\Menu\\loadOver.png", L"GameMedia\\Menu\\loadDown.png")) return false;
 
-	if (!g_MainGUI->AddButton(BUTTON_OPTION_ID, 650, 430, L"GameMedia\\Menu\\optionsUp.png",
+	if (!g_MainGUI->AddButton(BUTTON_OPTION_ID, WINDOW_WIDTH / 2 - 50, 650, L"GameMedia\\Menu\\optionsUp.png",
 		L"GameMedia\\Menu\\optionsOver.png", L"GameMedia\\Menu\\optionsDown.png")) return false;
 
+	if (!g_MainGUI->AddButton(BUTTON_HELP_ID, WINDOW_WIDTH / 2 - 50, 705, L"GameMedia\\Menu\\helpUp.png",
+		L"GameMedia\\Menu\\helpOver.png", L"GameMedia\\Menu\\helpDown.png")) return false;
 
-	if (!g_MainGUI->AddButton(BUTTON_QUIT_ID, 650, 510, L"GameMedia\\Menu\\quitUp.png",
+	if (!g_MainGUI->AddButton(BUTTON_QUIT_ID, WINDOW_WIDTH / 2 - 50, 760, L"GameMedia\\Menu\\quitUp.png",
 		L"GameMedia\\Menu\\quitOver.png", L"GameMedia\\Menu\\quitDown.png")) return false;
 
 
 	//------------------------【开始新游戏start页面相关的页面布局代码】------------------------
 	// 添加按钮到页面中
-	if (!g_StartGUI->AddButton(BUTTON_LEVEL_1_ID, 550, 380, L"GameMedia/Menu/level1Up.png", L"GameMedia/Menu/level1Over.png",
+	if (!g_StartGUI->AddButton(BUTTON_LEVEL_1_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia/Menu/level1Up.png", L"GameMedia/Menu/level1Over.png",
 		L"GameMedia/Menu/level1Down.png")) return false;
 
-	if (!g_StartGUI->AddButton(BUTTON_BACK_ID, 750, 350, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
+	if (!g_StartGUI->AddButton(BUTTON_BACK_ID, WINDOW_WIDTH / 2 - 50, 595, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
 		L"GameMedia/Menu/backDown.png")) return false;
 
 
@@ -87,17 +107,43 @@ bool GUI_Init()
 	if (!g_LoadGUI->AddStaticText(STATIC_TEXT_ID, L"这里是load game页面",
 		411, 340, D3DCOLOR_XRGB(33, 255, 55), g_LoadGUIFontID)) return false;
 	// 添加按钮到页面中
-	if (!g_LoadGUI->AddButton(BUTTON_BACK_ID, 750, 400, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
+	if (!g_LoadGUI->AddButton(BUTTON_BACK_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
 		L"GameMedia/Menu/backDown.png")) return false;
 
 
 	//------------------------【游戏设置option页面相关的页面布局代码】------------------------
 	// 添加按钮到页面中
-	if (!g_OptionGUI->AddButton(BUTTON_BACK_ID, 750, 450, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
+	if (!g_OptionGUI->AddButton(BUTTON_BACK_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
 		L"GameMedia/Menu/backDown.png")) return false;
 	//添加静态文本到页面中
 	if (!g_OptionGUI->AddStaticText(STATIC_TEXT_ID, L"这里是Option页面",
 		540, 60, D3DCOLOR_XRGB(33, 55, 255), g_OptionGUIFontID)) return false;
+
+	//------------------------【游戏帮助help页面相关的页面布局代码】------------------------
+	// 添加按钮到页面中
+	if (!g_HelpGUI->AddButton(BUTTON_BACK_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
+		L"GameMedia/Menu/backDown.png")) return false;
+	//添加静态文本到页面中
+	if (!g_HelpGUI->AddStaticText(STATIC_TEXT_ID, L"这里是help页面",
+		540, 60, D3DCOLOR_XRGB(33, 55, 255), g_HelpGUIFontID)) return false;
+
+	//------------------------【游戏胜利win页面相关的页面布局代码】------------------------
+	// 添加按钮到页面中
+	if (!g_WinGUI->AddButton(BUTTON_BACK_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
+		L"GameMedia/Menu/backDown.png")) return false;
+	//添加静态文本到页面中
+	if (!g_WinGUI->AddStaticText(STATIC_TEXT_ID, L"这里是win页面",
+		540, 60, D3DCOLOR_XRGB(33, 55, 255), g_WinGUIFontID)) return false;
+
+	//------------------------【游戏失败lose页面相关的页面布局代码】------------------------
+	// 添加按钮到页面中
+	if (!g_LoseGUI->AddButton(BUTTON_BACK_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
+		L"GameMedia/Menu/backDown.png")) return false;
+	//添加静态文本到页面中
+	if (!g_LoseGUI->AddStaticText(STATIC_TEXT_ID, L"这里是lose页面",
+		540, 60, D3DCOLOR_XRGB(33, 55, 255), g_LoseGUIFontID)) return false;
+
+	lock_timeout = timeGetTime();
 
 }
 
@@ -107,28 +153,69 @@ bool GUI_Init()
 //--------------------------------------------------------------------------------------------------
 void GUICallback(int id, int state)
 {
+
+	if (timeGetTime() - lock_timeout > 500)
+	{
+		gui_input_lock = false;
+	}
+	else
+	{
+		state = -1;
+	}
+
+	if (tmp_gui != g_currentGUI)
+	{
+		gui_input_lock = true;
+		lock_timeout = timeGetTime();
+		tmp_gui = g_currentGUI;
+	}
+
 	switch (id)
 	{
 	case BUTTON_START_ID:   //start game开始游戏按钮
 		if (state == UGP_BUTTON_DOWN)
-			g_currentGUI = GUI_START_SCREEN;
+			if (!gui_input_lock)
+			{
+				g_currentGUI = GUI_START_SCREEN;
+				gui_input_lock = true;
+			}
 		break;
 
 	case BUTTON_LOAD_ID:  //load game载入游戏按钮
 		if (state == UGP_BUTTON_DOWN)
-			g_currentGUI = GUI_LOAD_SCREEN;
+			if (!gui_input_lock)
+			{
+				g_currentGUI = GUI_LOAD_SCREEN;
+				gui_input_lock = true;
+			}
 		break;
 
 	case BUTTON_OPTION_ID: //option设置按钮
 		if (state == UGP_BUTTON_DOWN)
-			g_currentGUI = GUI_OPTION_SCREEN;
+			if (!gui_input_lock)
+			{
+				g_currentGUI = GUI_OPTION_SCREEN;
+				gui_input_lock = true;
+			}
 		break;
 
 	case BUTTON_BACK_ID: //back返回按钮
 		if (state == UGP_BUTTON_DOWN)
-			g_currentGUI = GUI_MAIN_SCREEN;
+			if (!gui_input_lock)
+			{
+				g_currentGUI = GUI_MAIN_SCREEN;
+				gui_input_lock = true;
+			}
 		break;
 
+	case BUTTON_HELP_ID:  //help按钮
+		if (state == UGP_BUTTON_DOWN)
+			if (!gui_input_lock)
+			{
+				g_currentGUI = GUI_HELP_SCREEN;
+				gui_input_lock = true;
+			}
+		break;
 
 	case BUTTON_QUIT_ID://quit退出按钮
 		if (state == UGP_BUTTON_DOWN)
@@ -145,6 +232,7 @@ void GUICallback(int id, int state)
 		}
 		break;
 	}
+
 }
 
 //GUI清理函数
@@ -154,5 +242,7 @@ void GUI_CleanUp()
 	SAFE_DELETE(g_StartGUI);
 	SAFE_DELETE(g_LoadGUI);
 	SAFE_DELETE(g_OptionGUI);
-
+	SAFE_DELETE(g_WinGUI);
+	SAFE_DELETE(g_LoseGUI);
+	SAFE_DELETE(g_HelpGUI);
 }

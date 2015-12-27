@@ -24,7 +24,9 @@
 #define GUI_OPTION_SCREEN     4
 
 #define GAME_RUN			  5
-
+#define GAME_WIN			  6
+#define GAME_LOSE			  7
+#define GUI_HELP_SCREEN		  8
 
 // 设置一些GUI中用到的控件ID
 #define STATIC_TEXT_ID     1
@@ -35,7 +37,7 @@
 #define BUTTON_BACK_ID     6
 #define BUTTON_LEVEL_1_ID  7
 
-
+#define BUTTON_HELP_ID     8
 
 
 

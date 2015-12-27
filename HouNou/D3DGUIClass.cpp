@@ -7,6 +7,8 @@
 #include<d3d9.h>
 #include<d3dx9.h>
 #include <stdlib.h>
+#include <stdio.h>
+#include <tchar.h>
 #include"D3DGUIClass.h"
 
 
@@ -159,8 +161,11 @@ bool D3DGUIClass::AddStaticText(int id, wchar_t *text, float x, float y, unsigne
 	int len = wcslen(text);
 	m_pControls[m_nTotalControlNum].m_text = new wchar_t[len+1];
 	if(!m_pControls[m_nTotalControlNum].m_text) return false;
-	wcscpy_s(m_pControls[m_nTotalControlNum].m_text, wcslen(m_pControls[m_nTotalControlNum].m_text), text);
-	//m_pControls[m_nTotalControlNum].m_text[len] = '\0';
+
+	//wcscpy_s(m_pControls[m_nTotalControlNum].m_text, wcslen(m_pControls[m_nTotalControlNum].m_text)+1, text);
+	
+	memcpy(m_pControls[m_nTotalControlNum].m_text, text, len);
+	m_pControls[m_nTotalControlNum].m_text[len] = '\0';
 
 	//增量总数的计算
 	m_nTotalControlNum++;
@@ -206,7 +211,7 @@ bool D3DGUIClass::AddButton(int id, float x, float y, wchar_t *up, wchar_t *over
 	m_pControls[m_nTotalControlNum].m_listID = m_nTotalBufferNum;
 
 	// 从文件加载纹理
-	if(D3DXCreateTextureFromFile(m_pd3dDevice, up, &m_pControls[m_nTotalControlNum].m_upTex) != D3D_OK)
+ 	if(D3DXCreateTextureFromFile(m_pd3dDevice, up, &m_pControls[m_nTotalControlNum].m_upTex) != D3D_OK)
 	{
 		return false;
 	}
@@ -411,6 +416,9 @@ void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY, void(*fu
 		GUICONTROL *pControl = gui->GetGUIControl(i);
 		if(!pControl) continue;
 
+		wchar_t temp_str[50] = { 0 };
+		int charCount = 0;
+
 		// 根据不同的类型做不同的操作
 		switch(pControl->m_type)
 		{
@@ -424,7 +432,9 @@ void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY, void(*fu
 			fontPosition.top = pControl->m_yPos;
 
 			// 显示文字
-			pFont->DrawText(NULL, pControl->m_text, -1, &fontPosition,
+			
+			charCount = swprintf_s(temp_str, 50, _T("%s"), pControl->m_text);
+			pFont->DrawText(NULL, temp_str, charCount, &fontPosition,
 				DT_LEFT, pControl->m_color);
 			break;
 
@@ -462,6 +472,7 @@ void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY, void(*fu
 			device->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
 			break;
 		}
+
 
 		//调用回调函数处理控件消息
 		if(funcPtr) funcPtr(pControl->m_id, status);

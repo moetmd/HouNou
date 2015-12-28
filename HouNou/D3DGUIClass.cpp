@@ -162,7 +162,7 @@ bool D3DGUIClass::AddStaticText(int id, wchar_t *text, float x, float y, unsigne
 	m_pControls[m_nTotalControlNum].m_text = new wchar_t[len+1];
 	if(!m_pControls[m_nTotalControlNum].m_text) return false;
 
-	//wcscpy_s(m_pControls[m_nTotalControlNum].m_text, wcslen(m_pControls[m_nTotalControlNum].m_text)+1, text);
+	//wcscpy_s(m_pControls[m_nTotalControlNum].m_text, wcslen(m_pControls[m_nTotalControlNum].m_text), text);
 	
 	memcpy(m_pControls[m_nTotalControlNum].m_text, text, len);
 	m_pControls[m_nTotalControlNum].m_text[len] = '\0';

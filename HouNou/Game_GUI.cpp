@@ -22,9 +22,9 @@ int						g_HelpGUIFontID = -1;
 
 int						g_currentGUI = GUI_MAIN_SCREEN;				//一个当前的GUI标识
 
-bool					gui_input_lock = false;
-int tmp_gui = GUI_MAIN_SCREEN;
-DWORD lock_timeout;
+bool					gui_input_lock = false;//防止连点的锁
+int						tmp_gui = GUI_MAIN_SCREEN;
+DWORD					lock_timeout;
 
 //GUI所需资源初始化
 bool GUI_Init()

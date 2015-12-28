@@ -179,6 +179,10 @@ bool Game_Init()
 	//当前回合设置为 玩家回合
 	current_turn = PLAYER_TURN;
 
+	//初始化逃脱数
+	h_escape_num = 0;
+	ai_escape_num = 0;
+
 	//create sprite object
 	D3DXCreateSprite(g_pd3dDevice, &spriteobj);
 
@@ -334,15 +338,15 @@ void Game_Update(HWND window)
 	if (Human_Players.empty() || Human_Players.size() == 0)
 	{
 		game_over = true;
-		g_currentGUI = GUI_START_SCREEN;
+		g_currentGUI = GAME_LOSE;
 		g_sound_bgm.Stop();
 	}
 
 	//如果玩家逃脱数为3个或以上，则游戏结束
-	if (h_escape_num >= 3)
+	if (h_escape_num >= 3 || ai_escape_num >= 3)
 	{
 		game_over = true;
-		g_currentGUI = GUI_START_SCREEN;
+		g_currentGUI = GAME_WIN;
 		g_sound_bgm.Stop();
 	}
 
@@ -618,6 +622,14 @@ void Game_Update(HWND window)
 					timer = timeGetTime();
 					break;
 				case 1:
+					//如果AI在左上角
+					if (ai_iter->second->world_X == 0 && ai_iter->second->world_Y == 0)
+					{
+						ai_escape_num += 1;
+						ai_iter->second->killed = true;
+						ai_iter->second->visibal = false;
+					}
+
 					if (ai_iter->second->Move_Up(false))
 					{
 						if (!ai_iter->second->Is_InBlood())
@@ -632,6 +644,14 @@ void Game_Update(HWND window)
 					timer = timeGetTime();
 					break;
 				case 2:
+					//如果AI在左上角
+					if (ai_iter->second->world_X == 0 && ai_iter->second->world_Y == 0)
+					{
+						ai_escape_num += 1;
+						ai_iter->second->killed = true;
+						ai_iter->second->visibal = false;
+					}
+
 					if (ai_iter->second->Move_Left(false))
 					{
 						if (!ai_iter->second->Is_InBlood())

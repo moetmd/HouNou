@@ -26,9 +26,6 @@ extern int				g_HelpGUIFontID;       //  GUI中字体对象的ID
 
 extern int				g_currentGUI;       //一个当前的GUI标识
 
-extern bool				gui_input_lock;    //输入锁，防止连点
-extern DWORD			lock_timeout;		//输入锁超时
-
 bool GUI_Init();
 void GUICallback(int id, int state);
 void GUI_CleanUp();

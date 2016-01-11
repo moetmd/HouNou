@@ -157,14 +157,14 @@ bool D3DGUIClass::AddStaticText(int id, wchar_t *text, float x, float y, unsigne
 	m_pControls[m_nTotalControlNum].m_yPos = y;
 	m_pControls[m_nTotalControlNum].m_listID = fontID;
 
-	// 复制文本数据 
+	// 复制文本数据   GUI静态文字乱码的原因
 	int len = wcslen(text);
-	m_pControls[m_nTotalControlNum].m_text = new wchar_t[len+1];
+	m_pControls[m_nTotalControlNum].m_text = new  wchar_t[len+1];
 	if(!m_pControls[m_nTotalControlNum].m_text) return false;
 
 	//wcscpy_s(m_pControls[m_nTotalControlNum].m_text, wcslen(m_pControls[m_nTotalControlNum].m_text), text);
 	
-	memcpy(m_pControls[m_nTotalControlNum].m_text, text, len);
+	memcpy(m_pControls[m_nTotalControlNum].m_text, text, len*2); //框字符拷贝长度乘以2
 	m_pControls[m_nTotalControlNum].m_text[len] = '\0';
 
 	//增量总数的计算
@@ -434,7 +434,8 @@ void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY, void(*fu
 			// 显示文字
 			
 			charCount = swprintf_s(temp_str, 50, _T("%s"), pControl->m_text);
-			pFont->DrawText(NULL, temp_str, charCount, &fontPosition,
+			//charCount = wcslen(pControl->m_text);
+			pFont->DrawText(NULL, pControl->m_text, charCount, &fontPosition,
 				DT_LEFT, pControl->m_color);
 			break;
 

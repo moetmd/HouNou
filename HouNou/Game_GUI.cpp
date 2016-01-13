@@ -4,7 +4,7 @@
 //创建四个GUI类对象，分别代表四个页面
 D3DGUIClass		*g_MainGUI = NULL;//主窗口
 D3DGUIClass		*g_StartGUI = NULL; //游戏开始窗口
-D3DGUIClass		*g_LoadGUI = NULL; //游戏载入窗口
+D3DGUIClass		*g_MultiGUI = NULL; //游戏载入窗口
 D3DGUIClass		*g_OptionGUI = NULL; //游戏设置窗口
 
 D3DGUIClass		*g_WinGUI = NULL; //胜利界面
@@ -34,7 +34,7 @@ bool GUI_Init()
 	// 创建一些GUI系统
 	g_MainGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //主菜单页面
 	g_StartGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //开始新游戏页面
-	g_LoadGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //载入游戏页面
+	g_MultiGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //载入游戏页面
 	g_OptionGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //设置页面
 
 	g_WinGUI = new D3DGUIClass(g_pd3dDevice, WINDOW_WIDTH, WINDOW_HEIGHT); //胜利页面
@@ -46,7 +46,7 @@ bool GUI_Init()
 																			  // 给页面分别添加背景图
 	if (!g_MainGUI->AddBackground(L"GameMedia/Menu/maingui.jpg")) return false;
 	if (!g_StartGUI->AddBackground(L"GameMedia/Menu/startgui.jpg")) return false;
-	if (!g_LoadGUI->AddBackground(L"GameMedia/Menu/loadgui.jpg")) return false;
+	if (!g_MultiGUI->AddBackground(L"GameMedia/Menu/loadgui.jpg")) return false;
 	if (!g_OptionGUI->AddBackground(L"GameMedia/Menu/optiongui.jpg")) return false;
 
 	if (!g_WinGUI->AddBackground(L"GameMedia/Menu/wingui.jpg")) return false;
@@ -57,7 +57,7 @@ bool GUI_Init()
 	// 分别给页面添加字体
 	if (!g_MainGUI->CreateTextFont(L"微软雅黑", 28, &g_MainGUIFontID)) return false;
 	if (!g_StartGUI->CreateTextFont(L"微软雅黑", 38, &g_StartGUIFontID)) return false;
-	if (!g_LoadGUI->CreateTextFont(L"微软雅黑", 38, &g_LoadGUIFontID)) return false;
+	if (!g_MultiGUI->CreateTextFont(L"微软雅黑", 38, &g_LoadGUIFontID)) return false;
 	if (!g_OptionGUI->CreateTextFont(L"微软雅黑", 38, &g_OptionGUIFontID)) return false;
 
 	if (!g_WinGUI->CreateTextFont(L"微软雅黑", 38, &g_WinGUIFontID)) return false;
@@ -80,7 +80,7 @@ bool GUI_Init()
 	if (!g_MainGUI->AddButton(BUTTON_START_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia\\Menu\\startUp.png",
 		L"GameMedia\\Menu\\StartOver.png", L"GameMedia\\Menu\\startDown.png")) return false;
 
-	if (!g_MainGUI->AddButton(BUTTON_LOAD_ID, WINDOW_WIDTH / 2 - 50, 595, L"GameMedia\\Menu\\loadUp.png",
+	if (!g_MainGUI->AddButton(BUTTON_MULTI_ID, WINDOW_WIDTH / 2 - 50, 595, L"GameMedia\\Menu\\loadUp.png",
 		L"GameMedia\\Menu\\loadOver.png", L"GameMedia\\Menu\\loadDown.png")) return false;
 
 	if (!g_MainGUI->AddButton(BUTTON_OPTION_ID, WINDOW_WIDTH / 2 - 50, 650, L"GameMedia\\Menu\\optionsUp.png",
@@ -104,10 +104,15 @@ bool GUI_Init()
 
 	//------------------------【载入游戏load页面相关的页面布局代码】------------------------
 	//添加静态文本到页面中
-	if (!g_LoadGUI->AddStaticText(STATIC_TEXT_ID, L"这里是load game页面",
+	if (!g_MultiGUI->AddStaticText(STATIC_TEXT_ID, L"这里是load game页面",
 		411, 340, D3DCOLOR_XRGB(33, 255, 55), g_LoadGUIFontID)) return false;
+	
+	//添加动态文本到页面中
+	if (-1 == g_MultiGUI->AddDynamicText(DYNAMIC_TEXT_ID, L"请输入IP地址：",
+		200, 200, D3DCOLOR_XRGB(80, 80, 80), g_LoadGUIFontID)) return false;
+
 	// 添加按钮到页面中
-	if (!g_LoadGUI->AddButton(BUTTON_BACK_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
+	if (!g_MultiGUI->AddButton(BUTTON_BACK_ID, WINDOW_WIDTH / 2 - 50, 540, L"GameMedia/Menu/backUp.png", L"GameMedia/Menu/backOver.png",
 		L"GameMedia/Menu/backDown.png")) return false;
 
 
@@ -181,11 +186,11 @@ void GUICallback(int id, int state)
 			}
 		break;
 
-	case BUTTON_LOAD_ID:  //load game载入游戏按钮
+	case BUTTON_MULTI_ID:  //load game载入游戏按钮
 		if (state == UGP_BUTTON_DOWN)
 			if (!gui_input_lock)
 			{
-				g_currentGUI = GUI_LOAD_SCREEN;
+				g_currentGUI = GUI_MULTI_SCREEN;
 				gui_input_lock = true;
 			}
 		break;
@@ -240,7 +245,7 @@ void GUI_CleanUp()
 {
 	SAFE_DELETE(g_MainGUI);
 	SAFE_DELETE(g_StartGUI);
-	SAFE_DELETE(g_LoadGUI);
+	SAFE_DELETE(g_MultiGUI);
 	SAFE_DELETE(g_OptionGUI);
 	SAFE_DELETE(g_WinGUI);
 	SAFE_DELETE(g_LoseGUI);

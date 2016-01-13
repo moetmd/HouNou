@@ -10,6 +10,7 @@
 #define UGP_GUI_STATICTEXT		1
 #define UGP_GUI_BUTTON			2
 #define UGP_GUI_Background		3
+#define UGP_GUI_DynamicText		4
 
 // 鼠标按键状态宏
 #define UGP_BUTTON_UP			1
@@ -20,7 +21,7 @@
 // 菜单页面的宏定义
 #define GUI_MAIN_SCREEN       1
 #define GUI_START_SCREEN      2
-#define GUI_LOAD_SCREEN		  3
+#define GUI_MULTI_SCREEN	  3
 #define GUI_OPTION_SCREEN     4
 
 #define GAME_RUN			  5
@@ -31,13 +32,14 @@
 // 设置一些GUI中用到的控件ID
 #define STATIC_TEXT_ID     1
 #define BUTTON_START_ID    2
-#define BUTTON_LOAD_ID	   3
+#define BUTTON_MULTI_ID	   3
 #define BUTTON_OPTION_ID   4
 #define BUTTON_QUIT_ID     5
 #define BUTTON_BACK_ID     6
 #define BUTTON_LEVEL_1_ID  7
 
 #define BUTTON_HELP_ID     8
+#define DYNAMIC_TEXT_ID	   9
 
 
 
@@ -89,6 +91,8 @@ private:
 	int m_nWindowWidth;	//窗口宽度
 	int m_nWindowHeight;	//窗口高度
 
+	int m_nDynamicTextId; //动态文字的Id
+
 
 
 public:
@@ -131,6 +135,11 @@ public:
 	bool AddBackground(wchar_t *fileName);  //GUI背景添加函数
 	bool AddStaticText(int id, wchar_t *text, float x, float y, unsigned long color, int fontID); //添加静态文本函数
 	bool AddButton(int id, float x, float y, wchar_t *up, wchar_t *over, wchar_t *down); //添加按钮函数
+	
+	bool AddDynamicText(int id, wchar_t *text, float x, float y, unsigned long color, int fontID); //添加动态文本函数
+	bool UpdateDynamicText(int id, wchar_t *text, float x, float y, unsigned long color); //更新动态文本函数
+	int GetDynamicTextId(); //获取动态文本控件的ID
+
 	void ClearUp( ); //资源清理函数
 
 
@@ -138,4 +147,3 @@ public:
 
 void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY,
 	void(*funcPtr)(int id, int state));  //回调函数
-

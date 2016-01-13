@@ -8,7 +8,7 @@
 //创建四个GUI类对象，分别代表四个页面
 extern D3DGUIClass		*g_MainGUI;   //主窗口
 extern D3DGUIClass		*g_StartGUI;  //游戏开始窗口
-extern D3DGUIClass		*g_LoadGUI;   //游戏载入窗口
+extern D3DGUIClass		*g_MultiGUI;   //游戏载入窗口
 extern D3DGUIClass		*g_OptionGUI; //游戏设置窗口
 
 extern D3DGUIClass		*g_WinGUI;    //胜利窗口

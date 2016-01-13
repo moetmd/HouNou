@@ -4,12 +4,12 @@
 //====================================================
 
 
-#include<d3d9.h>
-#include<d3dx9.h>
+#include <d3d9.h>
+#include <d3dx9.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <tchar.h>
-#include"D3DGUIClass.h"
+#include "D3DGUIClass.h"
 
 
 
@@ -28,6 +28,8 @@ D3DGUIClass::D3DGUIClass(LPDIRECT3DDEVICE9 device, int w, int h)
 
 	m_pd3dDevice = device;
 	m_nWindowWidth = w; m_nWindowHeight = h;
+
+	m_nDynamicTextId = 0;
 
 	memset(&m_Background, 0, sizeof(GUICONTROL));
 }
@@ -173,6 +175,105 @@ bool D3DGUIClass::AddStaticText(int id, wchar_t *text, float x, float y, unsigne
 	return true;
 }
 
+//-----------------------------------------------------------------------------
+// Name： D3DGUIClass::AddDynamicText( )
+// Desc:	创建动态文本控件
+//-----------------------------------------------------------------------------
+bool D3DGUIClass::AddDynamicText(int id, wchar_t *text, float x, float y, unsigned long color, int fontID)
+{
+	if (!text || fontID < 0 || fontID >= m_nTotalFontNum) return false;
+
+	if (m_nDynamicTextId != 0) return false; //只能添加一个动态文本控件
+
+	//下面的代码用于创建一个控件
+	if (!m_pControls)
+	{
+		m_pControls = new GUICONTROL[1];
+		if (!m_pControls) return false;
+		memset(&m_pControls[0], 0, sizeof(GUICONTROL));
+	}
+	else
+	{
+		GUICONTROL *temp;
+		temp = new GUICONTROL[m_nTotalControlNum + 1];
+		if (!temp) return false;
+		memset(temp, 0, sizeof(GUICONTROL) *
+			(m_nTotalControlNum + 1));
+
+		memcpy(temp, m_pControls,
+			sizeof(GUICONTROL) * m_nTotalControlNum);
+
+		delete[] m_pControls;
+		m_pControls = temp;
+	}
+
+	// 填充我们需要的静态文本信息
+	m_pControls[m_nTotalControlNum].m_type = UGP_GUI_DynamicText;
+	m_pControls[m_nTotalControlNum].m_id = id;
+	m_pControls[m_nTotalControlNum].m_color = color;
+	m_pControls[m_nTotalControlNum].m_xPos = x;
+	m_pControls[m_nTotalControlNum].m_yPos = y;
+	m_pControls[m_nTotalControlNum].m_listID = fontID;
+
+	// 复制文本数据   GUI静态文字乱码的原因
+	int len = wcslen(text);
+	m_pControls[m_nTotalControlNum].m_text = new  wchar_t[len + 1];
+	if (!m_pControls[m_nTotalControlNum].m_text) return false;
+
+	//wcscpy_s(m_pControls[m_nTotalControlNum].m_text, wcslen(m_pControls[m_nTotalControlNum].m_text), text);
+
+	memcpy(m_pControls[m_nTotalControlNum].m_text, text, len * 2); //框字符拷贝长度乘以2
+	m_pControls[m_nTotalControlNum].m_text[len] = '\0';
+
+
+	m_nDynamicTextId = m_nTotalControlNum;
+
+	//增量总数的计算
+	m_nTotalControlNum++;
+
+	return true;
+}
+
+//-----------------------------------------------------------------------------
+// Name： D3DGUIClass::UpdateDynamicText( )
+// Desc:	更新动态文本控件
+//-----------------------------------------------------------------------------
+bool D3DGUIClass::UpdateDynamicText(int id, wchar_t *text, float x, float y, unsigned long color)
+{
+	m_pControls[id].m_color = color;
+	m_pControls[id].m_xPos = x;
+	m_pControls[id].m_yPos = y;
+
+
+	// 复制文本数据   GUI静态文字乱码的原因
+	int len = wcslen(text);
+	m_pControls[id].m_text = new  wchar_t[len + 1];
+	if (!m_pControls[id].m_text) return false;
+
+	memcpy(m_pControls[id].m_text, text, len * 2); //框字符拷贝长度乘以2
+	m_pControls[id].m_text[len] = '\0';
+
+	return true;
+}
+//-----------------------------------------------------------------------------
+// Name： D3DGUIClass::GetDynamicTextId( )
+// Desc:	获取动态文本控件ID
+//-----------------------------------------------------------------------------
+int D3DGUIClass::GetDynamicTextId()
+{
+	int id = -1;
+
+	for (int i = 0; i < m_nTotalControlNum; ++i)
+	{
+		if (m_pControls[i].m_type == UGP_GUI_DynamicText)
+		{
+			id = i;
+			break;
+		}
+	}
+
+	return id;
+}
 
 //-----------------------------------------------------------------------------
 // Name： D3DGUIClass::AddButton( )
@@ -375,6 +476,7 @@ void D3DGUIClass::ClearUp()
 }
 
 
+
 //-----------------------------------------------------------------------------
 // Name：ProcessGUI
 // Desc: 全局的函数，封装渲染整个GUI系统，同样还为控件调用回调函数
@@ -439,6 +541,23 @@ void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY, void(*fu
 				DT_LEFT, pControl->m_color);
 			break;
 
+		case UGP_GUI_DynamicText:
+			// 这种情况下获取字体对象
+			pFont = gui->GetFont(pControl->m_listID);
+			if (!pFont) continue;
+
+			// 设置文字位置
+			fontPosition.left = pControl->m_xPos;
+			fontPosition.top = pControl->m_yPos;
+
+			// 显示文字
+
+			charCount = swprintf_s(temp_str, 50, _T("%s"), pControl->m_text);
+			//charCount = wcslen(pControl->m_text);
+			pFont->DrawText(NULL, pControl->m_text, charCount, &fontPosition,
+				DT_LEFT, pControl->m_color);
+			break;
+
 		case UGP_GUI_BUTTON:
 			status = UGP_BUTTON_UP;
 
@@ -479,3 +598,4 @@ void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY, void(*fu
 		if(funcPtr) funcPtr(pControl->m_id, status);
 	}
 }
+

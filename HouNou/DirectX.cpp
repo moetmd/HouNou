@@ -133,10 +133,19 @@ HRESULT Objects_Init()
 //-----------------------------------【Direct3D_Update( )函数】--------------------------------
 //	描述：不是即时渲染代码但是需要即时调用的，如按键后的坐标的更改，都放在这里
 //--------------------------------------------------------------------------------------------------
-void	Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
+void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 {
 	if(!game_over)
 		Game_Update(hwnd);
+
+	//在多人游戏界面获取输入，用于输入IP地址
+	if (g_currentGUI == GUI_MULTI_SCREEN)
+	{
+		g_pDInput->GetInput();
+
+		g_MultiGUI->UpdateDynamicText(g_MultiGUI->GetDynamicTextId(), L"hehe",200, 200,
+			D3DCOLOR_XRGB(80, 80, 80));
+	}
 }
 
 
@@ -174,8 +183,8 @@ void Direct3D_Render(HWND hwnd, FLOAT fTimeDelta)
 		ProcessGUI(g_StartGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
 		break;
-	case GUI_LOAD_SCREEN:
-		ProcessGUI(g_LoadGUI, g_LMBDown, g_MouseX,
+	case GUI_MULTI_SCREEN:
+		ProcessGUI(g_MultiGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
 		break;
 	case GUI_OPTION_SCREEN:
@@ -205,7 +214,7 @@ void Direct3D_Render(HWND hwnd, FLOAT fTimeDelta)
 
 	//-----------------------------【绘制文字信息】-----------------------------
 	HelpText_Render(hwnd);
-
+	
 
 	//--------------------------------------------------------------------------------------
 	//结束绘制

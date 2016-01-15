@@ -11,7 +11,8 @@
 #include <tchar.h>
 #include "D3DGUIClass.h"
 
-
+wchar_t* dynamicText_buffer = new wchar_t[20];
+int iptext_p = 0;
 
 //-----------------------------------------------------------------------------
 // Desc: ¹¹Ôìº¯Êý
@@ -30,6 +31,7 @@ D3DGUIClass::D3DGUIClass(LPDIRECT3DDEVICE9 device, int w, int h)
 	m_nWindowWidth = w; m_nWindowHeight = h;
 
 	m_nDynamicTextId = 0;
+
 
 	memset(&m_Background, 0, sizeof(GUICONTROL));
 }
@@ -599,3 +601,49 @@ void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY, void(*fu
 	}
 }
 
+
+void GUI_DTextUpdate(D3DGUIClass *gui, wchar_t text, int x, int y, unsigned long color)
+{
+	if (iptext_p < 18 || wcscmp(&text, L"-") == 0)
+	if (wcscmp(&text, L"-") == 0)
+	{
+		if (iptext_p == 0)
+		{
+			wchar_t* temp = new wchar_t[20];
+			temp[iptext_p] = '\0';
+			dynamicText_buffer[iptext_p] = '\0';
+			gui->UpdateDynamicText(gui->GetDynamicTextId(),
+				temp, 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+
+			delete[] temp;
+		}
+		else
+		{
+			wchar_t* temp = new wchar_t[20];
+			memcpy(temp, dynamicText_buffer, (iptext_p - 1) * 2);
+			temp[iptext_p - 1] = '\0';
+			dynamicText_buffer[iptext_p - 1] = '\0';
+
+			gui->UpdateDynamicText(gui->GetDynamicTextId(),
+				temp, 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+			
+			--iptext_p;
+			delete[] temp;
+		}
+	}
+	else
+	{
+		dynamicText_buffer[iptext_p] = text;
+		dynamicText_buffer[iptext_p + 1] = '\0';
+
+		wchar_t* temp = new wchar_t[20];
+		memcpy(temp, dynamicText_buffer, (iptext_p + 1) * 2);
+		temp[iptext_p + 1] = '\0';
+
+		gui->UpdateDynamicText(gui->GetDynamicTextId(),
+			temp, 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+
+		delete[] temp;
+		++iptext_p;
+	}
+}

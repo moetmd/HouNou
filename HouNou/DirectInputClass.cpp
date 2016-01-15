@@ -13,6 +13,7 @@ DInputClass::DInputClass()
 	m_pDirectInput = NULL;
 	m_KeyboardDevice = NULL;
 	ZeroMemory(m_keyBuffer,sizeof(char)*256);
+	ZeroMemory(&m_oldKeyBuffer, sizeof(m_oldKeyBuffer));
 	m_MouseDevice= NULL;
 	ZeroMemory(&m_MouseState, sizeof(m_MouseState));
 }
@@ -57,6 +58,7 @@ void DInputClass::GetInput()
 	//获取键盘输入消息
 	if(hr)
 	{
+		memcpy(m_oldKeyBuffer, m_keyBuffer, sizeof(m_keyBuffer));
 		m_KeyboardDevice->Acquire();  
 		m_KeyboardDevice->GetDeviceState( sizeof(m_keyBuffer),(LPVOID)m_keyBuffer );
 	}
@@ -82,6 +84,17 @@ bool DInputClass::IsKeyDown(int iKey)
 		return false;
 }
 
+bool DInputClass::IsKeyUp(int iKey)
+{
+ 	return (!(m_keyBuffer[iKey] & 0x80) &&
+ 		m_keyBuffer[iKey] != m_oldKeyBuffer[iKey]);
+
+}
+
+void DInputClass::ClearKey()
+{
+	ZeroMemory(m_keyBuffer, sizeof(m_keyBuffer));
+}
 
 //-----------------------------------------------------------------------------
 // Name：DInputClass::IsMouseButtonDown()

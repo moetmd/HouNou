@@ -17,6 +17,8 @@ wchar_t								g_strAdapterName[60] = { 0 };   //包含显卡名称的字符数组
 bool								g_LMBDown = false;      // GUI中的鼠标状态信息，鼠标左键是否按下的标识
 int									g_MouseX = 0, g_MouseY = 0;      //存储鼠标坐标的两个变量
 
+Timer *timer_1;
+
 
 LPDIRECT3DSURFACE9 backbuffer = NULL;
 
@@ -123,6 +125,8 @@ HRESULT Objects_Init()
 
 	//Game_Init();
 
+	timer_1 = new Timer(200);
+
 	return S_OK;
 }
 
@@ -138,13 +142,66 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 	if(!game_over)
 		Game_Update(hwnd);
 
+	if (!g_pd3dDevice)
+		return;
+	if(timer_1->TimeOut())
+		g_pDInput->GetInput();
+
 	//在多人游戏界面获取输入，用于输入IP地址
 	if (g_currentGUI == GUI_MULTI_SCREEN)
 	{
-		g_pDInput->GetInput();
+				
+		if (g_pDInput->IsKeyDown(DIK_1) || g_pDInput->IsKeyDown(DIK_NUMPAD1))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'1', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
 
-		g_MultiGUI->UpdateDynamicText(g_MultiGUI->GetDynamicTextId(), L"hehe",200, 200,
-			D3DCOLOR_XRGB(80, 80, 80));
+		if (g_pDInput->IsKeyDown(DIK_2) || g_pDInput->IsKeyDown(DIK_NUMPAD2))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'2', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_3) || g_pDInput->IsKeyDown(DIK_NUMPAD3))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'3', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_4) || g_pDInput->IsKeyDown(DIK_NUMPAD4))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'4', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_5) || g_pDInput->IsKeyDown(DIK_NUMPAD5))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'5', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_6) || g_pDInput->IsKeyDown(DIK_NUMPAD6))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'6', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_7) || g_pDInput->IsKeyDown(DIK_NUMPAD7))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'7', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_8) || g_pDInput->IsKeyDown(DIK_NUMPAD8))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'8', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_9) || g_pDInput->IsKeyDown(DIK_NUMPAD9))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'9', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_0) || g_pDInput->IsKeyDown(DIK_NUMPAD0))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'0', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_PERIOD) || g_pDInput->IsKeyDown(DIK_DECIMAL))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'.', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (g_pDInput->IsKeyDown(DIK_BACKSPACE))
+		{
+			GUI_DTextUpdate(g_MultiGUI, L'-', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+
+		g_pDInput->ClearKey();
 	}
 }
 

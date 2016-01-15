@@ -41,7 +41,9 @@
 #define BUTTON_HELP_ID     8
 #define DYNAMIC_TEXT_ID	   9
 
-
+//更新动态文字相关
+extern wchar_t* dynamicText_buffer;
+extern int iptext_p;
 
 
 
@@ -147,3 +149,5 @@ public:
 
 void ProcessGUI(D3DGUIClass *gui, bool LMBDown, int mouseX, int mouseY,
 	void(*funcPtr)(int id, int state));  //回调函数
+
+void GUI_DTextUpdate(D3DGUIClass *gui, wchar_t text, int x, int y, unsigned long color);

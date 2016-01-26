@@ -48,6 +48,12 @@
     <ClInclude Include="Sprite.h">
       <Filter>SpriteClasses</Filter>
     </ClInclude>
+    <ClInclude Include="TimerClass.h">
+      <Filter>源文件</Filter>
+    </ClInclude>
+    <ClInclude Include="GameClass.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CDirectMusic.cpp">
@@ -64,9 +70,6 @@
     </ClCompile>
     <ClCompile Include="DirectX.cpp">
       <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Monster.cpp">
-      <Filter>SpriteClasses</Filter>
     </ClCompile>
     <ClCompile Include="StoneClass.cpp">
       <Filter>SpriteClasses</Filter>
@@ -86,8 +89,20 @@
     <ClCompile Include="TileUtil.cpp">
       <Filter>GameCore</Filter>
     </ClCompile>
-    <ClCompile Include="AI_Player.cpp">
+    <ClCompile Include="MonsterClass.cpp">
       <Filter>SpriteClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="AI_PlayerClass.cpp">
+      <Filter>SpriteClasses</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="GameClass.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="MultiGame.cpp">
+      <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

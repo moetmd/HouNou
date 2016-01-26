@@ -24,10 +24,14 @@
 #define GUI_MULTI_SCREEN	  3
 #define GUI_OPTION_SCREEN     4
 
+#define GUI_MULTI_READY_SCREEN 9
+
 #define GAME_RUN			  5
 #define GAME_WIN			  6
 #define GAME_LOSE			  7
 #define GUI_HELP_SCREEN		  8
+
+#define MULTI_GAME_RUN		  10
 
 // 设置一些GUI中用到的控件ID
 #define STATIC_TEXT_ID     1
@@ -143,7 +147,6 @@ public:
 	int GetDynamicTextId(); //获取动态文本控件的ID
 
 	void ClearUp( ); //资源清理函数
-
 
 };
 

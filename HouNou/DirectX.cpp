@@ -18,7 +18,9 @@ bool								g_LMBDown = false;      // GUI中的鼠标状态信息，鼠标左键是否按下的标
 int									g_MouseX = 0, g_MouseY = 0;      //存储鼠标坐标的两个变量
 
 Timer *timer_1;
+Timer *timer_2;
 
+MultiGame* multi_game;
 
 LPDIRECT3DSURFACE9 backbuffer = NULL;
 
@@ -142,6 +144,11 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 	if(!game_over)
 		Game_Update(hwnd);
 
+	if (g_currentGUI == MULTI_GAME_RUN)
+	{
+		multi_game->Game_Update(hwnd);
+	}
+
 	if (!g_pd3dDevice)
 		return;
 	if(timer_1->TimeOut())
@@ -150,59 +157,61 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 	//在多人游戏界面获取输入，用于输入IP地址
 	if (g_currentGUI == GUI_MULTI_SCREEN)
 	{
-				
-		if (g_pDInput->IsKeyDown(DIK_1) || g_pDInput->IsKeyDown(DIK_NUMPAD1))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'1', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-
-		if (g_pDInput->IsKeyDown(DIK_2) || g_pDInput->IsKeyDown(DIK_NUMPAD2))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'2', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_3) || g_pDInput->IsKeyDown(DIK_NUMPAD3))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'3', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_4) || g_pDInput->IsKeyDown(DIK_NUMPAD4))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'4', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_5) || g_pDInput->IsKeyDown(DIK_NUMPAD5))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'5', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_6) || g_pDInput->IsKeyDown(DIK_NUMPAD6))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'6', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_7) || g_pDInput->IsKeyDown(DIK_NUMPAD7))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'7', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_8) || g_pDInput->IsKeyDown(DIK_NUMPAD8))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'8', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_9) || g_pDInput->IsKeyDown(DIK_NUMPAD9))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'9', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_0) || g_pDInput->IsKeyDown(DIK_NUMPAD0))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'0', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_PERIOD) || g_pDInput->IsKeyDown(DIK_DECIMAL))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'.', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-		if (g_pDInput->IsKeyDown(DIK_BACKSPACE))
-		{
-			GUI_DTextUpdate(g_MultiGUI, L'-', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-		}
-
-		g_pDInput->ClearKey();
+		GUI_InputUpdate(g_MultiGUI);
 	}
+
+	//尝试连接并选择模式
+	if (g_currentGUI == GUI_MULTI_READY_SCREEN && multi_game->flag == -1)
+	{
+		char* CStr;
+		CStr = (char*)malloc((wcslen(dynamicText_buffer) + 1)*sizeof(char));
+		size_t converted = 0;
+		wcstombs_s(&converted, CStr, wcslen(dynamicText_buffer) + 1, dynamicText_buffer, _TRUNCATE);
+		
+		multi_game->model = multi_game->GetConnection(CStr);
+
+		if (multi_game->model == -1)
+		{
+			g_MultiGUI->UpdateDynamicText(g_MultiGUI->GetDynamicTextId()
+				, L"连接出错！", 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (multi_game->model == 0)
+		{
+			g_MultiGUI->UpdateDynamicText(g_MultiGUI->GetDynamicTextId()
+				, L"以客户端模式启动，等待服务器开始游戏", 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+		}
+		if (multi_game->model == 1)
+		{
+			g_MultiGUI->UpdateDynamicText(g_MultiGUI->GetDynamicTextId()
+				, L"以服务器模式启动，等待客户端连接", 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+			timer_2 = new Timer(30000);
+		} 
+
+	}
+
+	//如果以客户端模式启动
+	if (g_currentGUI == GUI_MULTI_READY_SCREEN && multi_game->model == 0)
+	{
+		if (multi_game->client_receive())
+		{
+			multi_game->Game_Init();
+			g_currentGUI == MULTI_GAME_RUN;
+		}
+	}
+
+	//如果以服务器模式启动
+	if (g_currentGUI == GUI_MULTI_READY_SCREEN && multi_game->model == 1)
+	{
+		multi_game->ProcessLink();
+		if (multi_game->total == 8 || timer_2->TimeOut())
+		{
+			multi_game->Game_Init();
+			g_currentGUI == MULTI_GAME_RUN;
+		}
+	}
+
+
+
 }
 
 
@@ -241,8 +250,12 @@ void Direct3D_Render(HWND hwnd, FLOAT fTimeDelta)
 			g_MouseY, GUICallback);
 		break;
 	case GUI_MULTI_SCREEN:
+	case GUI_MULTI_READY_SCREEN:
 		ProcessGUI(g_MultiGUI, g_LMBDown, g_MouseX,
 			g_MouseY, GUICallback);
+		break;
+	case  MULTI_GAME_RUN:
+		multi_game->Game_Render(hwnd);
 		break;
 	case GUI_OPTION_SCREEN:
 		ProcessGUI(g_OptionGUI, g_LMBDown, g_MouseX,

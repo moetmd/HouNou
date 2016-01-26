@@ -3,15 +3,6 @@
 
 
 
-#define MONSTER_TURN 1
-#define PLAYER_TURN 2
-#define AI_TURN 3
-
-#define  UP 1
-#define  DOWN 2
-#define  LEFT 3
-#define  RIGHT 4
-
 double GaussRand();
 
 using namespace std;

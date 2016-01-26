@@ -18,12 +18,13 @@ using namespace std;
 
 #define WINDOW_TITLE _T("幻想乡冒险") //为窗口标题定义的宏
 
-
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 
 //-----------------------------------【头文件包含部分】---------------------------------------
 //	描述：包含程序所依赖的头文件
 //------------------------------------------------------------------------------------------------                                                                                      
+#include <winsock2.h>
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <tchar.h>
@@ -38,6 +39,7 @@ using namespace std;
 #include "Game_GUI.h"
 #include "Sprite.h"
 #include "Game.h"
+#include "GameClass.h"
 
 #include "TileUtil.h"
 
@@ -49,12 +51,12 @@ using namespace std;
 //-----------------------------------【库文件包含部分】---------------------------------------
 //	描述：包含程序所依赖的库文件
 //------------------------------------------------------------------------------------------------  
+#pragma comment (lib,"ws2_32.lib")
 #pragma comment(lib, "d3d9.lib")
 #pragma comment(lib, "d3dx9.lib")
 #pragma comment(lib, "dinput8.lib")     // 使用DirectInput必须包含的库文件，注意这里有8
 #pragma comment(lib, "dxguid.lib")
 #pragma comment(lib, "winmm.lib") 
-
 
 
 // 地板的顶点结构
@@ -91,7 +93,7 @@ extern bool						g_LMBDown;			// GUI中的鼠标状态信息，鼠标左键是否按下的标识
 extern int						g_MouseX, g_MouseY; //存储鼠标坐标的两个变量
 extern bool						game_pause;         //游戏是否暂停
 extern bool						game_over;			//游戏是否结束
-
+extern MultiGame* multi_game;  //多人游戏对象
 
 
 

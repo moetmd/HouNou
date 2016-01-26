@@ -29,3 +29,4 @@ extern int				g_currentGUI;       //一个当前的GUI标识
 bool GUI_Init();
 void GUICallback(int id, int state);
 void GUI_CleanUp();
+void GUI_InputUpdate(D3DGUIClass* gui);

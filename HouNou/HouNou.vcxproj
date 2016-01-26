@@ -152,9 +152,11 @@
     <ClInclude Include="DirectInputClass.h" />
     <ClInclude Include="DirectX.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="GameClass.h" />
     <ClInclude Include="Game_GUI.h" />
     <ClInclude Include="Sprite.h" />
     <ClInclude Include="TileUtil.h" />
+    <ClInclude Include="TimerClass.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AI_PlayerClass.cpp" />
@@ -163,13 +165,16 @@
     <ClCompile Include="DirectInputClass.cpp" />
     <ClCompile Include="DirectX.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="GameClass.cpp" />
     <ClCompile Include="Game_GUI.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MonsterClass.cpp" />
+    <ClCompile Include="MultiGame.cpp" />
     <ClCompile Include="PlayerClass.cpp" />
     <ClCompile Include="SpriteClass.cpp" />
     <ClCompile Include="StoneClass.cpp" />
     <ClCompile Include="TileUtil.cpp" />
+    <ClCompile Include="TimerClass.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

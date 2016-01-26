@@ -186,12 +186,14 @@ void GUICallback(int id, int state)
 			}
 		break;
 
-	case BUTTON_MULTI_ID:  //load game载入游戏按钮
+	case BUTTON_MULTI_ID:  //多人游戏 按钮
 		if (state == UGP_BUTTON_DOWN)
 			if (!gui_input_lock)
 			{
 				g_currentGUI = GUI_MULTI_SCREEN;
 				gui_input_lock = true;
+				
+				multi_game = new MultiGame();
 			}
 		break;
 
@@ -210,6 +212,9 @@ void GUICallback(int id, int state)
 			{
 				g_currentGUI = GUI_MAIN_SCREEN;
 				gui_input_lock = true;
+
+				if (multi_game)
+					SAFE_DELETE(multi_game);
 			}
 		break;
 
@@ -239,6 +244,66 @@ void GUICallback(int id, int state)
 	}
 
 }
+
+//GUI输入交互
+void GUI_InputUpdate(D3DGUIClass* gui)
+{
+	if (g_pDInput->IsKeyDown(DIK_1) || g_pDInput->IsKeyDown(DIK_NUMPAD1))
+	{
+		GUI_DTextUpdate(gui, L'1', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+
+	if (g_pDInput->IsKeyDown(DIK_2) || g_pDInput->IsKeyDown(DIK_NUMPAD2))
+	{
+		GUI_DTextUpdate(gui, L'2', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_3) || g_pDInput->IsKeyDown(DIK_NUMPAD3))
+	{
+		GUI_DTextUpdate(gui, L'3', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_4) || g_pDInput->IsKeyDown(DIK_NUMPAD4))
+	{
+		GUI_DTextUpdate(gui, L'4', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_5) || g_pDInput->IsKeyDown(DIK_NUMPAD5))
+	{
+		GUI_DTextUpdate(gui, L'5', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_6) || g_pDInput->IsKeyDown(DIK_NUMPAD6))
+	{
+		GUI_DTextUpdate(gui, L'6', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_7) || g_pDInput->IsKeyDown(DIK_NUMPAD7))
+	{
+		GUI_DTextUpdate(gui, L'7', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_8) || g_pDInput->IsKeyDown(DIK_NUMPAD8))
+	{
+		GUI_DTextUpdate(gui, L'8', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_9) || g_pDInput->IsKeyDown(DIK_NUMPAD9))
+	{
+		GUI_DTextUpdate(gui, L'9', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_0) || g_pDInput->IsKeyDown(DIK_NUMPAD0))
+	{
+		GUI_DTextUpdate(gui, L'0', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_PERIOD) || g_pDInput->IsKeyDown(DIK_DECIMAL))
+	{
+		GUI_DTextUpdate(gui, L'.', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_BACKSPACE))
+	{
+		GUI_DTextUpdate(gui, L'-', 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+	}
+	if (g_pDInput->IsKeyDown(DIK_RETURN))
+	{
+		g_currentGUI = GUI_MULTI_READY_SCREEN;
+	}
+	g_pDInput->ClearKey();
+}
+
 
 //GUI清理函数
 void GUI_CleanUp()

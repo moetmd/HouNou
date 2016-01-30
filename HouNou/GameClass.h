@@ -94,6 +94,8 @@ public:
 
 	bool Game_Init();
 	void Game_Update(HWND window);
+	void Game_Client_Update(HWND window);
+
 	void Game_Render(HWND hwnd);
 
 	bool client_send(char* text);

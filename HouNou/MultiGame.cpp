@@ -163,29 +163,126 @@ void MultiGame::Game_Update(HWND window)
 	char text[10];
 	if (g_pDInput->IsKeyDown(DIK_UPARROW))
 	{
-		text[0] = '-';
-		text[1] = '1';
+		//移动方向
+		text[0] = '1';
 
+		//是否推
+		if (g_pDInput->IsKeyDown(DIK_LSHIFT))
+		{
+			text[1] = '1';
+		}
+		else
+			text[1] = '0';
+
+		multi_game->client_send(text);
 	}
 
 	if (g_pDInput->IsKeyDown(DIK_DOWNARROW))
 	{
+		//移动方向
+		text[0] = '2';
 
+		//是否推
+		if (g_pDInput->IsKeyDown(DIK_LSHIFT))
+		{
+			text[1] = '1';
+		}
+		else
+			text[1] = '0';
+
+		multi_game->client_send(text);
 	}
 
 	if (g_pDInput->IsKeyDown(DIK_LEFTARROW))
 	{
+		//移动方向
+		text[0] = '3';
 
+		//是否推
+		if (g_pDInput->IsKeyDown(DIK_LSHIFT))
+		{
+			text[1] = '1';
+		}
+		else
+			text[1] = '0';
+
+		multi_game->client_send(text);
 	}
 
 	if (g_pDInput->IsKeyDown(DIK_RIGHTARROW))
 	{
+		//移动方向
+		text[0] = '4';
 
+		//是否推
+		if (g_pDInput->IsKeyDown(DIK_LSHIFT))
+		{
+			text[1] = '1';
+		}
+		else
+			text[1] = '0';
+
+		multi_game->client_send(text);
 	}
 
+	if (client_receive())
+	{
+		//是否进行更新
+		if (buff[0] == '-')
+		{
+			char* player = (char*)malloc(2);
+			char* role = (char*)malloc(2);
+			char* action = (char*)malloc(1);
+			char* push = (char*)malloc(1);
+
+			//获取玩家和角色ID
+			player[0] = buff[1];
+			player[1] = '\0';
+			role[0] = buff[2];
+			role[1] = '\0';
+
+			//获取动作，1上，2下，3左，4右
+			action[0] = buff[4];
+
+			//是否推，0否，1是
+			push[0] = buff[3];
+
+			//进行相应动作
+			switch (action[0])
+			{
+			case '1':
+
+				break;
+
+			case '2':
+
+				break;
+
+			case '3':
+
+				break;
+
+			case '4':
+
+				break;
+
+			default:
+				break;
+			}
+
+
+		}
+	}
+	
 
 
 
+
+
+}
+
+void MultiGame::Game_Client_Update(HWND window)
+{
 
 }
 

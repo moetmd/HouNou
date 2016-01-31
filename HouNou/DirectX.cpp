@@ -161,7 +161,7 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 	}
 
 	//尝试连接并选择模式
-	if (g_currentGUI == GUI_MULTI_READY_SCREEN && multi_game->flag == -1)
+	if (g_currentGUI == GUI_MULTI_READY_SCREEN && multi_game->model == -1)
 	{
 		char* CStr;
 		CStr = (char*)malloc((wcslen(dynamicText_buffer) + 1)*sizeof(char));
@@ -192,11 +192,11 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 	//如果以客户端模式启动
 	if (g_currentGUI == GUI_MULTI_READY_SCREEN && multi_game->model == 0)
 	{
-		if (multi_game->client_receive())
-		{
+		//if (multi_game->client_receive())
+		//{
 			multi_game->Game_Init();
-			g_currentGUI == MULTI_GAME_RUN;
-		}
+			g_currentGUI = MULTI_GAME_RUN;
+		//}
 	}
 
 	//如果以服务器模式启动
@@ -206,7 +206,7 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 		if (multi_game->total == 8 || timer_2->TimeOut())
 		{
 			multi_game->Game_Init();
-			g_currentGUI == MULTI_GAME_RUN;
+			g_currentGUI = MULTI_GAME_RUN;
 		}
 	}
 

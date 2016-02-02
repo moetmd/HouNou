@@ -251,7 +251,16 @@ void MultiGame::Game_Update(HWND window)
 			switch (action[0])
 			{
 			case '1':
-
+				if (atoi(push) == 1)
+				{
+					if (AllPlayer[atoi(player)][atoi(role)]->Push_Up())
+					{
+						AllPlayer[atoi(player)][atoi(role)]->Move_Up(false);
+					}
+				}
+				else
+					AllPlayer[atoi(player)][atoi(role)]->Move_Up(false);
+				
 				break;
 
 			case '2':
@@ -385,6 +394,7 @@ bool MultiGame::client_receive()
 
 bool MultiGame::client_send(char* text)
 {
+	char buff[256];
 	memset(buff, 0, sizeof(buff));
 	memcpy(buff, text, sizeof(text));
 

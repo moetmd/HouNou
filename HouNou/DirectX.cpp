@@ -192,11 +192,22 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 	//如果以客户端模式启动
 	if (g_currentGUI == GUI_MULTI_READY_SCREEN && multi_game->model == 0)
 	{
-		//if (multi_game->client_receive())
-		//{
-			multi_game->Game_Init();
-			g_currentGUI = MULTI_GAME_RUN;
-		//}
+		if ( multi_game->client_receive())
+		{
+			char t[2] = {0};
+			if (multi_game->buff[0] == 's')
+			{
+				
+				t[0] = multi_game->buff[1];
+				multi_game->total = atoi(t);
+
+				multi_game->Game_Init();
+				g_currentGUI = MULTI_GAME_RUN;
+			}
+			t[0] = '*';
+			
+			multi_game->client_send(t);
+		}
 	}
 
 	//如果以服务器模式启动

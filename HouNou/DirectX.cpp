@@ -216,6 +216,18 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 		multi_game->ProcessLink();
 		if (multi_game->total == 8 || timer_2->TimeOut())
 		{
+			char t[4] = { 0 };
+			char c_total[1] = { 0 };
+
+			t[0] = 's';
+			_itoa_s(multi_game->total, c_total, sizeof(c_total), 10);
+			t[1] = c_total[0];
+
+			for (int i = 0; i < multi_game->total; ++i)
+			{
+				multi_game->server_send((LPVOID)multi_game->c[i].s, t);
+			}
+
 			multi_game->Game_Init();
 			g_currentGUI = MULTI_GAME_RUN;
 		}

@@ -160,6 +160,13 @@ void MultiGame::Game_Update(HWND window)
 	//update input devices
 	g_pDInput->GetInput();
 
+	if (g_pDInput->IsKeyDown(DIK_ESCAPE))
+	{
+		game_over = true;
+		g_currentGUI = GUI_MAIN_SCREEN;
+		g_sound_bgm.Stop();
+	}
+
 	char text[10];
 	if (g_pDInput->IsKeyDown(DIK_UPARROW))
 	{

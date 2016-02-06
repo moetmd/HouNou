@@ -217,7 +217,7 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 		if (multi_game->total == 8 || timer_2->TimeOut())
 		{
 			char t[4] = { 0 };
-			char c_total[1] = { 0 };
+			char* c_total = (char*)malloc(1);
 
 			t[0] = 's';
 			_itoa_s(multi_game->total, c_total, sizeof(c_total), 10);

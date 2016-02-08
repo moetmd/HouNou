@@ -25,7 +25,7 @@ bool MultiGame::Game_Init()
 	//2到4位玩家
 	if (total <= 3)
 	{
-		for (int i = 0; i <= total; ++i)
+		for (int i = total; i >= 0; --i)
 		{
 			map<int, Player*> temp;
 			for (int j = 0; j < 2; ++j)
@@ -43,7 +43,7 @@ bool MultiGame::Game_Init()
 	//5到7位玩家
 	if (total >= 4)
 	{
-		for (int i = 0; i <= total; ++i)
+		for (int i = total; i >= 0; --i)
 		{
 			map<int, Player*> temp;
 			for (int j = 0; j < 2; ++j)
@@ -56,6 +56,9 @@ bool MultiGame::Game_Init()
 			AllPlayer[i] = temp;
 		}
 	}
+
+	cursor->world_X = AllPlayer[0][0]->world_X;
+	cursor->world_Y = AllPlayer[0][0]->world_Y - 1;
 
 	current_turn = PLAYER_TURN;
 

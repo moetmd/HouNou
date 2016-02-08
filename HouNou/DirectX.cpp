@@ -184,7 +184,7 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 		{
 			g_MultiGUI->UpdateDynamicText(g_MultiGUI->GetDynamicTextId()
 				, L"以服务器模式启动，等待客户端连接", 200, 200, D3DCOLOR_XRGB(80, 80, 80));
-			timer_2 = new Timer(30000);
+			timer_2 = new Timer(5000);
 		} 
 
 	}

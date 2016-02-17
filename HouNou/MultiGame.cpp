@@ -18,6 +18,16 @@ MultiGame::~MultiGame()
 	::WSACleanup();
 }
 
+//开线程用
+DWORD WINAPI ThreadProc(LPVOID lpParameter)
+{
+	while (true)
+	{
+		((MultiGame*)lpParameter)->ProcessLink();
+	}
+	return 0;
+}
+
 bool MultiGame::Game_Init()
 {
 	GameClass::Game_Init();
@@ -25,12 +35,12 @@ bool MultiGame::Game_Init()
 	//2到4位玩家
 	if (total <= 3)
 	{
-		for (int i = total; i >= 0; --i)
+		for (int i = 0; i < total - 1; ++i)
 		{
 			map<int, Player*> temp;
 			for (int j = 0; j < 2; ++j)
 			{
-				Player* player = new Player();
+				Player* player = new Player(6);
 				player->Set_img(L"GameMedia\\010_00.png");
 				player->current_step -= 1;
 
@@ -43,12 +53,12 @@ bool MultiGame::Game_Init()
 	//5到7位玩家
 	if (total >= 4)
 	{
-		for (int i = total; i >= 0; --i)
+		for (int i = 0; i < total-1; ++i)
 		{
 			map<int, Player*> temp;
 			for (int j = 0; j < 2; ++j)
 			{
-				Player* player = new Player();
+				Player* player = new Player(6);
 				player->Set_img(L"GameMedia\\010_00.png");
 				player->current_step -= 1;
 				temp[j] = player;
@@ -235,7 +245,7 @@ void MultiGame::Game_Update(HWND window)
 		multi_game->client_send(text);
 	}
 
-	if (client_receive())
+	//if (client_receive())
 	{
 		//是否进行更新
 		if (buff[0] == '-')
@@ -420,7 +430,26 @@ bool MultiGame::client_send(char* text)
 
 bool MultiGame::server_receive(LPVOID lp)
 {
+	SOCKET *s = (SOCKET *)lp;
+	int nrecv;
+	nrecv = ::recv(*s, buff, 1024, 0);
+
+	if (nrecv > 0)
+	{
+		buff[nrecv] = '\0';
+	}
+	else
+	{
+		return false;
+	}
+
+	if (nrecv == SOCKET_ERROR)	//连接错误
+	{
+		return false;
+	}
+
 	return true;
+
 }
 
 bool MultiGame::server_send(LPVOID lp, char* text)
@@ -489,6 +518,11 @@ bool MultiGame::StartServer()
 	}
 
 	flag = 1;
+
+	HANDLE hThread1;
+	hThread1 = CreateThread(NULL, 0, ThreadProc, this, 0, NULL);
+
+	return true;
 }
 
 bool MultiGame::ProcessLink()

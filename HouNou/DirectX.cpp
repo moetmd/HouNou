@@ -147,11 +147,12 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 	if (g_currentGUI == MULTI_GAME_RUN)
 	{
 		multi_game->Game_Update(hwnd);
+		//multi_game->ProcessLink();
 	}
 
 	if (!g_pd3dDevice)
 		return;
-	if(timer_1->TimeOut())
+	if(timer_1->TimeOut() && g_currentGUI == GUI_MULTI_SCREEN)
 		g_pDInput->GetInput();
 
 	//在多人游戏界面获取输入，用于输入IP地址
@@ -184,7 +185,12 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 		{
 			g_MultiGUI->UpdateDynamicText(g_MultiGUI->GetDynamicTextId()
 				, L"以服务器模式启动，等待客户端连接", 200, 200, D3DCOLOR_XRGB(80, 80, 80));
+			
+			multi_game->StartServer();
+
+
 			timer_2 = new Timer(5000);
+
 		} 
 
 	}
@@ -213,7 +219,7 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 	//如果以服务器模式启动
 	if (g_currentGUI == GUI_MULTI_READY_SCREEN && multi_game->model == 1)
 	{
-		multi_game->ProcessLink();
+		
 		if (multi_game->total == 8 || timer_2->TimeOut())
 		{
 			char t[4] = { 0 };
@@ -223,14 +229,16 @@ void Direct3D_Update(HWND hwnd, FLOAT fTimeDelta)
 			_itoa_s(multi_game->total, c_total, sizeof(c_total), 10);
 			t[1] = c_total[0];
 
-			for (int i = 0; i < multi_game->total; ++i)
+			for (int i = 1; i < multi_game->total; ++i)
 			{
-				multi_game->server_send((LPVOID)multi_game->c[i].s, t);
+				multi_game->server_send((LPVOID*)&multi_game->acceptSocket, t);
 			}
 
 			multi_game->Game_Init();
 			g_currentGUI = MULTI_GAME_RUN;
 		}
+		//else
+			//multi_game->ProcessLink();
 	}
 
 

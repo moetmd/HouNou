@@ -26,7 +26,7 @@ public:
 	virtual void Stones_Init();
 
 	//sprites
-	Monster* monster;
+	//Monster* monster;
 	map<int, Sprite*> stones;
 	Sprite* cursor; //指向当前角色的指针
 

@@ -248,7 +248,7 @@ void MultiGame::Game_Update(HWND window)
 	//if (client_receive())
 	{
 		//是否进行更新
-		if (buff[0] == '-')
+		if (buff[4] == '-')
 		{
 			char* player = (char*)malloc(2);
 			char* role = (char*)malloc(2);
@@ -256,16 +256,16 @@ void MultiGame::Game_Update(HWND window)
 			char* push = (char*)malloc(1);
 
 			//获取玩家和角色ID
-			player[0] = buff[1];
+			player[0] = buff[2];
 			player[1] = '\0';
-			role[0] = buff[2];
+			role[0] = buff[3];
 			role[1] = '\0';
 
 			//获取动作，1上，2下，3左，4右
-			action[0] = buff[4];
+			action[0] = buff[0];
 
 			//是否推，0否，1是
-			push[0] = buff[3];
+			push[0] = buff[1];
 
 			//进行相应动作
 			switch (action[0])
@@ -580,8 +580,11 @@ bool MultiGame::ProcessLink()
 					int nrecv = ::recv(c[i].s, buff, 1024, 0);
 					if (nrecv > 0)
 					{
+						buff[2] = '0';
+						buff[3] = '0';
+						buff[4] = '-';
 						//字符串以'\0'结尾
-						buff[nrecv] = '\0';
+						buff[nrecv+3] = '\0';
 						if (flag == 0)
 						{
 

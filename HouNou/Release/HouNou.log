@@ -1,0 +1,121 @@
+﻿生成启动时间为 2016/2/6 15:47:29。
+     1>项目“D:\D3DProjects\HouNou\HouNou\HouNou.vcxproj”在节点 2 上(Build 个目标)。
+     1>ClCompile:
+         D:\Visual Studio 2015\VC\bin\CL.exe /c /Zi /nologo /W3 /WX- /sdl /O2 /Oi /Oy- /GL /D WIN32 /D NDEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm- /EHsc /MD /GS /Gy /fp:precise /Zc:wchar_t /Zc:forScope /Zc:inline /Fo"Release\\" /Fd"Release\vc140.pdb" /Gd /TP /analyze- /errorReport:prompt AI_PlayerClass.cpp D3DGUIClass.cpp DirectInputClass.cpp DirectX.cpp Game.cpp GameClass.cpp Game_GUI.cpp main.cpp MonsterClass.cpp MultiGame.cpp PlayerClass.cpp SpriteClass.cpp StoneClass.cpp TileUtil.cpp TimerClass.cpp
+         AI_PlayerClass.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+         D3DGUIClass.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>D3DGUIClass.cpp(535): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>D3DGUIClass.cpp(536): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>D3DGUIClass.cpp(552): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>D3DGUIClass.cpp(553): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+         DirectInputClass.cpp
+         DirectX.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+         Game.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+     1>Game.cpp(778): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>Game.cpp(779): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+         GameClass.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+         Game_GUI.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+     1>Game_GUI.cpp(112): warning C4806: “==”: 不安全操作: 从类型“bool”提升到类型“int”的值不能等于给定的常量
+         main.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+         MonsterClass.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+     1>MonsterClass.cpp(5): warning C4005: “RIGHT”: 宏重定义
+         d:\d3dprojects\hounou\hounou\GameClass.h(10): note: 参见“RIGHT”的前一个定义
+     1>MonsterClass.cpp(6): warning C4005: “DOWN”: 宏重定义
+         d:\d3dprojects\hounou\hounou\GameClass.h(8): note: 参见“DOWN”的前一个定义
+     1>MonsterClass.cpp(7): warning C4005: “LEFT”: 宏重定义
+         d:\d3dprojects\hounou\hounou\GameClass.h(9): note: 参见“LEFT”的前一个定义
+         MultiGame.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+     1>MultiGame.cpp(337): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>MultiGame.cpp(338): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+         PlayerClass.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+         SpriteClass.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+     1>SpriteClass.cpp(90): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>SpriteClass.cpp(96): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>SpriteClass.cpp(105): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+         StoneClass.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+     1>StoneClass.cpp(7): warning C4244: “参数”: 从“float”转换到“int”，可能丢失数据
+         TileUtil.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+     1>TileUtil.cpp(14): warning C4838: 从“unsigned long”转换到“LONG”需要收缩转换
+     1>TileUtil.cpp(116): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>TileUtil.cpp(128): warning C4244: “=”: 从“int”转换到“float”，可能丢失数据
+     1>TileUtil.cpp(132): warning C4838: 从“float”转换到“LONG”需要收缩转换
+     1>TileUtil.cpp(132): warning C4244: “初始化”: 从“float”转换到“LONG”，可能丢失数据
+     1>TileUtil.cpp(217): warning C4244: “参数”: 从“int”转换到“FLOAT”，可能丢失数据
+     1>TileUtil.cpp(240): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>TileUtil.cpp(241): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>TileUtil.cpp(246): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>TileUtil.cpp(247): warning C4244: “=”: 从“float”转换到“LONG”，可能丢失数据
+     1>TileUtil.cpp(264): warning C4244: “参数”: 从“double”转换到“FLOAT”，可能丢失数据
+     1>TileUtil.cpp(273): warning C4244: “参数”: 从“double”转换到“FLOAT”，可能丢失数据
+         TimerClass.cpp
+     1>d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+     1>d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+         C:\Program Files (x86)\Windows Kits\8.1\Include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+       Link:
+         D:\Visual Studio 2015\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"D:\D3DProjects\HouNou\HouNou\Release\HouNou.exe" /INCREMENTAL:NO /NOLOGO winmm.lib dxerr.lib dxguid.lib d3dx9d.lib d3dx10d.lib d3d9.lib comctl32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /MANIFEST /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /manifest:embed /Debug /PDB:"D:\D3DProjects\HouNou\HouNou\Release\HouNou.pdb" /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG:incremental /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"D:\D3DProjects\HouNou\HouNou\Release\HouNou.lib" /MACHINE:X86 /SAFESEH Release\AI_PlayerClass.obj
+         Release\CDirectMusic.obj
+         Release\D3DGUIClass.obj
+         Release\DirectInputClass.obj
+         Release\DirectX.obj
+         Release\Game.obj
+         Release\GameClass.obj
+         Release\Game_GUI.obj
+         Release\main.obj
+         Release\MonsterClass.obj
+         Release\MultiGame.obj
+         Release\PlayerClass.obj
+         Release\SpriteClass.obj
+         Release\StoneClass.obj
+         Release\TileUtil.obj
+         Release\TimerClass.obj
+         正在生成代码
+     1>d:\d3dprojects\hounou\hounou\spriteclass.cpp(41): warning C4715: “Sprite::Set_img”: 不是所有的控件路径都返回值
+     1>d:\d3dprojects\hounou\hounou\game_gui.cpp(153): warning C4715: “GUI_Init”: 不是所有的控件路径都返回值
+     1>d:\d3dprojects\hounou\hounou\multigame.cpp(593): warning C4715: “MultiGame::ProcessLink”: 不是所有的控件路径都返回值
+         343 of 651 functions (52.7%) were compiled, the rest were copied from previous compilation.
+           196 functions were new in current compilation
+           70 functions had inline decision re-evaluated but remain unchanged
+         已完成代码的生成
+         HouNou.vcxproj -> D:\D3DProjects\HouNou\HouNou\Release\HouNou.exe
+     1>已完成生成项目“D:\D3DProjects\HouNou\HouNou\HouNou.vcxproj”(Build 个目标)的操作。
+
+已成功生成。
+
+已用时间 00:00:18.40

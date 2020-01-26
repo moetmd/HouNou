@@ -72,8 +72,8 @@ bool GUI_Init()
 	if (!g_MainGUI->AddStaticText(STATIC_TEXT_ID, L"Version 0.1",
 		1170, 735, D3DCOLOR_XRGB(55, 155, 255), g_MainGUIFontID)) return false;
 
-	if (!g_MainGUI->AddStaticText(STATIC_TEXT_ID, L"hehe",
-		500, 150, D3DCOLOR_XRGB(255, 255, 255), g_MainGUIFontID)) return false;
+// 	if (!g_MainGUI->AddStaticText(STATIC_TEXT_ID, L"hehe",
+// 		500, 150, D3DCOLOR_XRGB(255, 255, 255), g_MainGUIFontID)) return false;
 
 
 	// 添加按钮，分别是开始游戏，载入进度，选项和退出游戏，每个按钮对应3幅图

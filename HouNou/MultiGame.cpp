@@ -70,6 +70,8 @@ bool MultiGame::Game_Init()
 	cursor->world_X = AllPlayer[0][0]->world_X;
 	cursor->world_Y = AllPlayer[0][0]->world_Y - 1;
 
+	update_flag = false;
+
 	current_turn = PLAYER_TURN;
 
 	return true;
@@ -245,7 +247,7 @@ void MultiGame::Game_Update(HWND window)
 		multi_game->client_send(text);
 	}
 
-	//if (client_receive())
+	if (update_flag)
 	{
 		//是否进行更新
 		if (buff[4] == '-')
@@ -299,7 +301,7 @@ void MultiGame::Game_Update(HWND window)
 				break;
 			}
 
-
+			update_flag = false;
 		}
 	}
 	
@@ -591,6 +593,9 @@ bool MultiGame::ProcessLink()
 						}
 						else
 							flag = 0;
+
+						update_flag = true;
+
 						for (int x = 1;x < total;x++)
 						{
 							//if (i != x)//不发送给发信者

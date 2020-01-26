@@ -1,0 +1,7 @@
+﻿  Game_GUI.cpp
+d:\dxsdk2006\include\d3d9types.h(1385): warning C4819: 该文件包含不能在当前代码页(936)中表示的字符。请将该文件保存为 Unicode 格式以防止数据丢失
+d:\dxsdk2006\include\dmerror.h(12): warning C4005: “FACILITY_DIRECTMUSIC”: 宏重定义
+  c:\program files (x86)\windows kits\8.1\include\shared\winerror.h(162): note: 参见“FACILITY_DIRECTMUSIC”的前一个定义
+d:\d3dprojects\hounou\hounou\game_gui.cpp(112): warning C4806: “==”: 不安全操作: 从类型“bool”提升到类型“int”的值不能等于给定的常量
+d:\d3dprojects\hounou\hounou\game_gui.cpp(153): warning C4715: “GUI_Init”: 不是所有的控件路径都返回值
+  HouNou.vcxproj -> D:\D3DProjects\HouNou\HouNou\Debug\HouNou.exe

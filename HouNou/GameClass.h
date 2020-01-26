@@ -69,6 +69,9 @@ public:
 	int MAPDATA[20*13];
 	int WALL[11][16];			//游戏面板范围数据
 
+	//是否更新动作-测试用
+	bool update_flag;
+
 
 	LPDIRECT3DSURFACE9 gameworld; //游戏世界相关
 	long start;

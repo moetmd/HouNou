@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="26" tilewidth="32" tileheight="32" nextobjectid="1">
+ <tileset firstgid="1" name="ground" tilewidth="32" tileheight="32" tilecount="90">
+  <image source="ground.png" width="320" height="288"/>
+ </tileset>
+ <tileset firstgid="91" name="9" tilewidth="32" tileheight="32" tilecount="110">
+  <image source="9.png" width="320" height="352"/>
+ </tileset>
+ <tileset firstgid="201" name="8" tilewidth="32" tileheight="32" tilecount="80">
+  <image source="8.png" width="320" height="256"/>
+ </tileset>
+ <tileset firstgid="281" name="3" tilewidth="32" tileheight="32" tilecount="80">
+  <image source="3.png" width="320" height="256"/>
+ </tileset>
+ <tileset firstgid="361" name="4" tilewidth="32" tileheight="32" tilecount="80">
+  <image source="4.png" width="320" height="256"/>
+ </tileset>
+ <tileset firstgid="441" name="6" tilewidth="32" tileheight="32" tilecount="80">
+  <image source="6.png" width="320" height="256"/>
+ </tileset>
+ <tileset firstgid="521" name="2" tilewidth="32" tileheight="32" tilecount="70">
+  <image source="2.png" width="320" height="224"/>
+ </tileset>
+ <tileset firstgid="591" name="1" tilewidth="32" tileheight="32" tilecount="70">
+  <image source="1.png" width="320" height="224"/>
+ </tileset>
+ <tileset firstgid="661" name="5" tilewidth="32" tileheight="32" tilecount="100">
+  <image source="5.png" width="320" height="320"/>
+ </tileset>
+ <tileset firstgid="761" name="7" tilewidth="32" tileheight="32" tilecount="80">
+  <image source="7.png" width="320" height="256"/>
+ </tileset>
+ <tileset firstgid="841" name="10" tilewidth="32" tileheight="32" tilecount="80">
+  <image source="10.png" width="320" height="256"/>
+ </tileset>
+ <tileset firstgid="921" name="11" tilewidth="32" tileheight="32" tilecount="110">
+  <image source="11.png" width="320" height="352"/>
+ </tileset>
+ <layer name="定位" width="40" height="26">
+  <data encoding="base64" compression="zlib">
+   eJztl70OwCAIhE+HPnDff2g6NG2aAP4B16TDDWqMHxxirAC2AlTkSmI4559rWeP3fEZ+GHzy4IuMS+LUGNj5Vp7b6mN0PXryrYhjtE+07GHn+zXvDTODxbeXW4w5urg8+WYUkT8rt9odj2Cz6i+7B/W8JdL7rSnaayY+jYfBX3a+Eb9ZlM33hf8lg38SwwGzhQ8L
+  </data>
+ </layer>
+ <layer name="块层 1" width="40" height="26">
+  <data encoding="base64" compression="zlib">
+   eJzt1bEOgjAUheFrHwAdiSMwIuAoLoL6Qr7/4GlSQlNoIoPpJTnDl65/OtxjRMQQ0d9kcAycFHRNcmihc65wVtDl992gd+7s29z3hJfzVtZXQBmoFHTRbz6HWeqWWJ//arOH/9PaZq3tq6a9tfe3hktEI2nvse17wBAxJu4rZLkP3Aui9L6n/xdP
+  </data>
+ </layer>
+ <layer name="建筑物1" width="40" height="26">
+  <data encoding="base64" compression="zlib">
+   eJztzkENADAMxLDyZ7mVSI/FVM2W8k8V/OWkm/r1CAAAwCIDPvUCpw==
+  </data>
+ </layer>
+ <layer name="建筑物2" width="40" height="26">
+  <data encoding="base64" compression="zlib">
+   eJzVl7tOwzAUhk+qigUYoUslLjOP0REegaED1w4NbKUBAWWCUi4DlMLE7RF4DWAEITFCQSABExu/FVu1XDtOm1QtR/p02jiXL8eW7WQcogzI8jwFkgF4lnYb96THUf6L8zOcPhybRH5F/u4Cz4qjJ/mxmiXIR0SUGumYAGXctwL2wD44AIfARVtd8RPXMbcXavYTMQNmJeY054SJHPmOVeQTUAOn4Iz71Enfv0XuZ4o8mGbvyPNSC079YAAMSsfOwQW4BFfgOsBP9LHNT7i5Br+0gSEwDFLSuW/gHWTBB/gM8EuG9LPVL204NgJGwZimfRks8t+5CH4FsCJRbMEvKDywRn4fRvELE+34sajh2eOc/+BHBsc4/HSE8RPUlbY4/eII1c/Uv7o5K2wkFDrhp5uzeskvaM7qBb8o0Qk/T/Jja3HcceP42MJWPzaHe4b7mOaPVueTMH7zYEGCeYn65Th5xTPMs+PyY+vyLbgDJWoef2yvWOiAn21cyn4P4BHsUmP8bSKXOFvgifz9rnh21P5NKNnkx/YNqxKifmXkdbABKrx+uRbe3xa66+W1gPm5TvO5st822JH8WPySX+OofrpgawHbU6aoUT+X7+nF3tnlfkfIx5yqMv7K1Bk/eS1gfsKJhTy/fFF3villfqjx/Sa+k4WfQ/Zv76KlvR08x/xccewPCEjWFw==
+  </data>
+ </layer>
+ <layer name="建筑物3" width="40" height="26">
+  <data encoding="base64" compression="zlib">
+   eJztzrEJADAMBDF7zuy/Rwgu4hG+kOD6qxqnf0n2V9rbk/q1pf8BAACQ7wLofwOZ
+  </data>
+ </layer>
+ <layer name="树根" width="40" height="26">
+  <data encoding="base64" compression="zlib">
+   eJxjYCAdlDMyMFQwkqFxFNAcXAfiGwPtCCLAUHHnKMAOuqAYH7hOD4fgAcS4caDBYHfjaD4lHsQyQvBgBKNuIx/A3DeY3QgDg9mN0YM8DMmJ407aOIVqAOY+WDn+E4oHCxjs4YcLXITigQZDtW5WB+YzjUFcFgw0INTHpne7DJd9AA3FG4o=
+  </data>
+ </layer>
+ <layer name="树1" width="40" height="26">
+  <data encoding="base64" compression="zlib">
+   eJztl0sKwjAQhpO919BLCXoAUdzoRk/Qq/nY1bu4c4b6b4ZJSBrTidAPhpKSdj4mDxLn8tl75w4UFz/i4wA7iiv970bPO0VP8RJ9Fkq+7htTAS94xugCUZMHxdPp9ZNY+AF4xrD0O9Jc2yT0s/Jj+oQ+1mNsDY/h1loiQso6tSRlnc4MrP0QVoTWObxmvzj/6gfG+r1FtOSH/7S6j7MT+2EfL63hr2En9sM+3pofn6G184jFeUoD9ZNMPR9D+XhMNb8lrbOVr++J3PIcg7yhMYzd82qAfJj/J6rNWakP2jn3vBJkPrRxx5bv0c6555UQygefD2R9cas=
+  </data>
+ </layer>
+ <layer name="树2" width="40" height="26">
+  <data encoding="base64" compression="zlib">
+   eJztwYEAAAAAw6D5U9/gBFUBAAAAfAMQQAAB
+  </data>
+ </layer>
+</map>
